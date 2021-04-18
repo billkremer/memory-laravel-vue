@@ -6,20 +6,7 @@
 
     <hr class="style-rainbow"/>
 
-    <div>
-        {{-- left --}}
-        <div>
-            {{-- difficulty radio select --}}
-        </div>
-        {{-- right --}}
-        <div>
-            {{-- top score --}}
-        </div>
-
-
-    </div>
-
-    <game-board>
+<game-game></game-game>
 
     
 </div> {{--  container end --}}

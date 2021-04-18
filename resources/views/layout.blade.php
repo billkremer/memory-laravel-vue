@@ -18,9 +18,11 @@
 <body>
     <section id="top">
         <h1 id="title">Memory</h1>
-        <h2 id="quote">"Without memory, there is no culture. Without memory, there would be no civilization, no society, no future." <span>-- Elie Wiesel</span></h2>
+        <h2 id="quote">Without memory, there is no culture. 
+            <br>Without memory, there would be no civilization, no society, no future.
+            <br>-- Elie Wiesel</h2>
     </section>
-    
+
     <div id="app">
         <main class="py-4">
             @yield('content')

@@ -1,0 +1,33 @@
+body {
+	// text-align: center;
+    // background-color: #F2F9F8;
+    margin: 25px;
+
+    background: $background-light-blue;  /* fallback for old browsers */
+    background: linear-gradient(to right, $background-dark-blue, $background-light-blue); 
+
+}
+
+
+
+
+h1 {
+	font: 72px 'Audiowide', cursive;
+  color: $yellow;
+}
+
+h2 {
+	font: 24px 'Josefin Slab', serif;
+  color: $yellow;
+}
+
+hr.style-rainbow {
+  margin-left: 25px;
+  margin-right: 25px;
+  border: 0;
+  height: 4px;
+  background: linear-gradient(90deg, $red 0%, $yellow 25%, $green 50%, $blue 75%, $indigo 100%);
+  // https://coolors.co/ef476f-ffd166-06d6a0-118ab2-073b4c
+}
+
+// https://coolors.co/8ecae6-219ebc-023047-ffb703-fb8500

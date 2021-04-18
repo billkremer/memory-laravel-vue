@@ -1,32 +1,16 @@
 <template>
     <div class="container">
-        
-
-
-
-
-
-
-
-
-
-
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Example Component</div>
-
-                    <div class="card-body">
-                        I'm an example component.
-                    </div>
-                </div>
-            </div>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-outline-warning">
+            <input type="radio" name="difficulty" id="difficulty1" value="easy" @change="emitChangeDifficulty"> Easy
+        </label>
+        <label class="btn btn-outline-warning">
+            <input type="radio" name="difficulty" id="difficulty2" value="medium" @change="emitChangeDifficulty" checked> Medium
+        </label>
+        <label class="btn btn-outline-warning">
+            <input type="radio" name="difficulty" id="difficulty3" value="hard" @change="emitChangeDifficulty"> Hard
+        </label>
         </div>
-
-
-
-
-
     </div>
 </template>
 
@@ -39,7 +23,17 @@
             }
         },
         mounted() {
-            console.log('Board Component mounted.')
-        }
+            console.log('difficulty Component mounted.')
+        },
+        watch: {
+
+        },
+        methods: {
+            emitChangeDifficulty: function(changeDifficulty) {
+                this.$emit('event_change_difficulty', changeDifficulty)
+                // console.log(changeDifficulty);
+                // console.log(changeDifficulty.target.value);
+            }
+        },
     }
 </script>

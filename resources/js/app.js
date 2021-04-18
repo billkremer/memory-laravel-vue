@@ -20,6 +20,7 @@ window.Vue = require('vue').default;
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('game-game', require('./components/Game.vue').default);
 Vue.component('game-board', require('./components/GameBoard.vue').default);
 Vue.component('game-difficulty', require('./components/GameDifficulty.vue').default);
 Vue.component('game-card', require('./components/GameCard.vue').default);
