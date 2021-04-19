@@ -3,6 +3,12 @@
 
 
 
+        <!-- <game-card
+            v-for="(card, index) in cardArray"
+            v-bind:value="card.matchPair"
+            v-bind:key="index">
+        
+        ></game-card> -->
 
 
 
@@ -10,18 +16,6 @@
 
 
 
-
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Example Component</div>
-
-                    <div class="card-body">
-                        I'm an example component.
-                    </div>
-                </div>
-            </div>
-        </div>
 
 
 
@@ -38,8 +32,35 @@
                 
             }
         },
+        props: [
+            'disabled',
+            
+        ],
         mounted() {
             console.log('Board Component mounted.')
+            this.checkWidth();
+
+        },
+        computed: {
+            cardArray: () => {
+                
+                
+
+
+
+
+            }
+
+
+        },
+        methods: {
+            checkWidth: function() {
+                // this checks the form width to help determine whether headers and extra space is necessary
+                this.availableWidth =  window.innerWidth;
+            },
+
         }
+
+
     }
 </script>

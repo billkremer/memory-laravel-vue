@@ -6,6 +6,7 @@
         <!-- {{-- left --}} -->
         <div>
             <game-difficulty
+                :disabled="this.difficultyDisabled"
                 v-on:event_change_difficulty="eventChangeDifficulty($event)"
         
             
@@ -20,17 +21,14 @@
 
     </div>
 
-    <game-board></game-board>
+        <game-board
+            :disabled="this.boardDisabled"
+            :gameDifficulty="gameDifficulty"
+            v-on:event_games_started="eventGameStarted($event)"
+        
+        ></game-board>
 
-
-
-
-
-
-
-
-      
-
+        <button @click="doit()">click</button>
 
 
 
@@ -44,6 +42,13 @@
         data: function () {
             return {
                 gameDifficulty: 'medium',
+                easyDifficultyArray: [3,4],   // 6 pairs
+                mediumDifficultyArray: [4,5], // 10 pairs
+                hardDifficultyArray: [5,6],   // 15 pairs
+                difficultyDisabled: false,
+                boardDisabled: false,
+                gameStarted: false,
+                gameFinished: false,
             }
         },
         mounted() {
@@ -58,16 +63,50 @@
         },
         watch: {
             gameDifficulty: function (newDifficulty, oldDifficulty ) {
-                console.log('new difficulty = ', newDifficulty, 'old difficulty=', oldDifficulty)
+                // console.log('new difficulty = ', newDifficulty, 'old difficulty=', oldDifficulty);
+                // console.log(this.gameGrid);
             },
+        },
+        computed: {
+            gameGrid: function() {
+                switch (this.gameDifficulty) {
+                    case 'easy':
+                        return this.easyDifficultyArray;
+                    case 'medium':
+                        return this.mediumDifficultyArray;
+                    case 'hard':
+                        return this.hardDifficultyArray;                
+                    default:
+                        return this.mediumDifficultyArray;
+                }
+
+
+            }
+
         },
         methods: {
             eventChangeDifficulty: function(changeDifficulty) {
+                this.gameDifficulty = changeDifficulty;
+            },
+            eventGameStarted: function(gameStarted) {
                 // this.$emit('event_change_difficulty', changeDifficulty)
-                console.log(changeDifficulty, 'game');
-                console.log(changeDifficulty.target.value);
-                this.gameDifficulty = changeDifficulty.target.value;
-            }
+                console.log(gameStarted, 'gamestarted event?');
+                console.log(gameStarted.target.value);
+                this.gameStarted = gameStarted.target.value;
+                this.difficultyDisabled = true;
+            },
+            eventGameFinished: function(gameFinished) {
+                // this.$emit('event_change_difficulty', changeDifficulty)
+                console.log(gameFinished, 'gamestarted event?');
+                console.log(gameFinished.target.value);
+                this.gameFinished = gameFinished.target.value;
+
+                // this.difficultyDisabled = false; // create a restart button?
+                // this.boardDisabled = true // un-disable with a restart button
+            },
+            doit: function() {
+                console.log(this.gameDifficulty);
+            },
         },
 
 
