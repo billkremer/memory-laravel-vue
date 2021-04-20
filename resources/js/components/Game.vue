@@ -1,34 +1,34 @@
 <template>
-    <div class="container">
+    <div class="container" id="gamegame">
 
 
-    <div>
-        <!-- {{-- left --}} -->
         <div>
-            <game-difficulty
-                :disabled="this.difficultyDisabled"
-                v-on:event_change_difficulty="eventChangeDifficulty($event)"
-        
+            <!-- {{-- left --}} -->
+            <div>
+                <game-difficulty
+                    :disabled="this.difficultyDisabled"
+                    v-on:event_change_difficulty="eventChangeDifficulty($event)"
             
-            ></game-difficulty>
-            <!-- {{-- difficulty radio select --}} -->
-        </div>
-        <!-- {{-- right --}} -->
-        <div>
-            <!-- {{-- top score --}} -->
-        </div>
+                
+                ></game-difficulty>
+                <!-- {{-- difficulty radio select --}} -->
+            </div>
+            <!-- {{-- right --}} -->
+            <div>
+                <!-- {{-- top score --}} -->
+            </div>
 
 
-    </div>
+        </div>
 
         <game-board
             :disabled="this.boardDisabled"
-            :gameDifficulty="gameDifficulty"
+            :gameGrid="this.gameGrid"
             v-on:event_games_started="eventGameStarted($event)"
         
         ></game-board>
 
-        <button @click="doit()">click</button>
+        <!-- <button @click="doit()">click</button> -->
 
 
 
@@ -105,6 +105,7 @@
                 // this.boardDisabled = true // un-disable with a restart button
             },
             doit: function() {
+
                 console.log(this.gameDifficulty);
             },
         },
