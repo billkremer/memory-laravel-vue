@@ -31,3 +31,15 @@ hr.style-rainbow {
 }
 
 // https://coolors.co/8ecae6-219ebc-023047-ffb703-fb8500
+
+div.card-back {
+  display: inline-block;
+  background-color: $pink;
+  margin: 5px 5px 5px 5px;
+  padding: auto auto auto auto;
+}
+
+#gameDifficulty {
+  padding: 15px 15px 15px 15px;
+}
+

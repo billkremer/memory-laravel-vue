@@ -1,22 +1,25 @@
 <template>
-    <div class="container">
+    <div class="row container" ref="gameboard" id="gameboard">
+
+        <!-- <button @click="doit1()">click</button> -->
+
+
+        <!-- <div> -->
+            <game-card
+                v-for="card in cardArray"
+                v-bind:card="card"
+                v-bind:key="card.cardId"
+                v-bind:ref="card.cardId"
+                v-on:event_card_clicked="eventCardClicked(card)"
+            ></game-card>
+
+                <!-- v-bind:canClick="canClick" -->
+
+        <!-- </div> -->
 
 
 
-        <!-- <game-card
-            v-for="(card, index) in cardArray"
-            v-bind:value="card.matchPair"
-            v-bind:key="index">
-        
-        ></game-card> -->
 
-
-
-
-
-
-
-        <button @click="doit1()">click</button>
 
 
 
@@ -32,6 +35,14 @@
             return {
                 availableWidth: 0,
                 cardArray: [],
+                cardsClicked: [],
+                // canClick: true,
+                numberOfGuesses: 0,
+                numberOfMatches: 0,
+                gameStarted: false,
+                gameFinished: false,
+
+
             }
         },
         props: [
@@ -39,88 +50,106 @@
             'gameGrid',
         ],
         mounted() {
-            console.log('Board Component mounted.')
-            this.checkWidth();
-            this.createCardArray();
+            console.log('Board Component mounted.');
+            this.$nextTick(function () {
+                this.resetGame();
+                window.addEventListener("resize", this.checkWidth);
+
+            });
 
 
         },
         computed: {
-//             cardArray: () => {
-//                 let cards = [];
-//                 let numberOfCards = this.gameGrid[0] * this.gameGrid[1];
-//                 // https://robohash.org/a?bgset=any&size=300x300&set=set4
-//                 let baseurl = 'https://robohash.org/';
-//                 let bgParam = '?bgset=any';
-//                 let setParam = '&set=set' + Math.floor((Math.random() * 4) + 1);
 
-// let x = (this.availableWidth - (this.gameGrid[1]-1) * 10)/ this.gameGrid[1];
-// let y = (window.innerHeight - 310 - (this.gameGrid[0]-1) * 10) / this.gameGrid[0];
-
-
-//                 let robotSize = 100; //TODO calculate proper size pick smaller of x or y
-//                 let sizeParam = '&size=' + robotSize + 'x' + robotSize;
-//                 // console.log('here');
-//                 for (let i = 0; i <= numberOfCards; i + 2) {
-//                     cards[i] = {url: (baseurl + i + bgParam + setParam + sizeParam)  }
-//                     cards[i+1] = {url: (baseurl + i + bgParam + setParam + sizeParam)  }
-
-//                 }
-
-//                 // console.log(cards, 'cards');
-
-//                 return this.shuffleArray(cards);
-
-//             }
 
 
         },
+        watch: {
+            gameGrid: function() {
+                this.resetGame();
+            },
+            cardsClicked: function (newCards, oldCards) {
+
+                if (this.cardsClicked.length >=2 ) {
+
+                    if (this.cardsClicked[0].pairValue === this.cardsClicked[1].pairValue
+                        &&  this.cardsClicked[0].cardId !== this.cardsClicked[1].cardId) {
+                        console.log('match');
+                        
+                        this.$refs[this.cardsClicked[0].cardId][0].card.canClick = false;
+                        this.$refs[this.cardsClicked[1].cardId][0].card.canClick = false;
+                        this.cardsClicked = [];
+
+                        this.numberOfMatches++;
+                        
+                    } else {
+                        console.log('not a match');
+                        this.$refs[this.cardsClicked[0].cardId][0].card.canClick = true;
+                        this.$refs[this.cardsClicked[1].cardId][0].card.canClick = true;
+
+                        this.cardsClicked[0].cardFaceShown = false;
+                        this.cardsClicked[1].cardFaceShown = false;
+                        this.cardsClicked = [];
+
+                    }
+
+                }
+            },
+            numberOfMatches: function (n,o) {
+                if (this.numberOfMatches == this.cardArray.length / 2 ) {
+                    this.emitGameFinished();
+                }
+            },
+        },
         methods: {
+            resetGame: function () {
+                this.canClick = true;
+                this.cardArray = [];
+                this.cardsClicked = [];
+                this.numberOfGuesses = 0;
+                this.checkWidth();
+                
+            },
+            checkWidth: function() {
+                this.availableWidth = this.$refs.gameboard.clientWidth;
+                this.createCardArray();
+            },
             createCardArray: function () {
                 let cards = [];
                 let numberOfCards = this.gameGrid[0] * this.gameGrid[1];
+
                 // https://robohash.org/a?bgset=any&size=300x300&set=set4
                 let baseurl = 'https://robohash.org/';
                 let bgParam = '?bgset=any';
                 let setParam = '&set=set' + Math.floor((Math.random() * 4) + 1);
 
-let x = (this.availableWidth - (this.gameGrid[1]-1) * 10)/ this.gameGrid[1];
-let y = (window.innerHeight - 310 - (this.gameGrid[0]-1) * 10) / this.gameGrid[0];
+                let width = (this.availableWidth - 20 * (this.gameGrid[1] )) / this.gameGrid[1];
+                let height = (window.innerHeight - 310 - 20 * (this.gameGrid[0])) / this.gameGrid[0];
+                let robotSize = Math.floor(width);
 
-
-                let robotSize = 100; //TODO calculate proper size pick smaller of x or y
+                if ( width > height ) { robotSize = Math.floor(height); }
                 let sizeParam = '&size=' + robotSize + 'x' + robotSize;
-                console.log('here');
+
+
                 for (let i = 0; i < numberOfCards; i += 2) {
                     cards[i] = {url: (baseurl + i + bgParam + setParam + sizeParam),
                                 pairValue: i, 
-                                cardNumber: i, }
+                                cardId: i, 
+                                size: robotSize,
+                                cardFaceShown: false,
+                                canClick: true, }
                     cards[i+1] = {url: (baseurl + i + bgParam + setParam + sizeParam),
                                 pairValue: i,
-                                cardNumber: (i + 1), }
-
+                                cardId: (i + 1),
+                                size: robotSize,
+                                cardFaceShown: false, 
+                                canClick: true, }
                 }
 
 
                 this.cardArray = this.shuffleArray(cards);
-                // this.cardArray = (cards);
             },
-            checkWidth: function() {
-                // this checks the form width to help determine whether headers and extra space is necessary
-                // this.availableWidth =  window.innerWidth;
-                this.availableWidth =  document.getElementById('gamegame').clientWidth;
-                
-            },
-            doit1: function() {
-                this.checkWidth();
-                var element = document.getElementById('gamegame');
-let x = (this.availableWidth - (this.gameGrid[1]-1) * 10)/ this.gameGrid[1];
-let y = (window.innerHeight - 310 - (this.gameGrid[0]-1) * 10) / this.gameGrid[0];
-                console.log(this.availableWidth, this.gameGrid, element.clientWidth);
-                console.log(x,y);
-                // this.createCardArray();
-                console.log(this.cardArray);
-            },
+
             shuffleArray: function (array) {
                 // https://javascript.info/array-methods#shuffle-an-array
                 for (let i = array.length - 1; i > 0; i--) {
@@ -128,6 +157,39 @@ let y = (window.innerHeight - 310 - (this.gameGrid[0]-1) * 10) / this.gameGrid[0
                     [array[i], array[j]] = [array[j], array[i]];
                 }
                 return array;
+            },
+
+            eventCardClicked: function(card) {
+                if(this.gameStarted == false) {
+                    console.log('falsestart')
+                    this.gameStarted = true;
+                    this.emitGameStarted();
+                } // currently this just deactivates the difficulty select
+
+                // console.log('gameboard card clicked', this.cardsClicked, card);
+
+                if (this.cardsClicked.length > 0 
+                    && this.cardsClicked[0].cardId !== card.cardId) {
+                    this.cardsClicked.push(card);
+                    this.numberOfGuesses++;
+                } else if (this.cardsClicked.length == 0 ) {
+                    this.cardsClicked.push(card);
+                    console.log('here', card);
+                    // card.canClick = false;
+                    // this.$refs[this.cardsClicked[0].cardId][0].card.canClick = false;
+                                        console.log('here2', card);
+
+                    this.numberOfGuesses++;
+                }
+
+                this.$emit('event_another_guess', this.numberOfGuesses);
+
+            },
+            emitGameStarted: function () {
+                this.$emit('event_game_started', 'started');
+            },
+            emitGameFinished: function () {
+                this.$emit('event_game_finished', this.numberOfGuesses);
             },
 
         }

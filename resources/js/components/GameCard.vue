@@ -1,27 +1,47 @@
-{{-- This comment will not be present in the rendered HTML --}}
-// game card
-<template>
-<!-- game card -->
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Example Component</div>
 
-                    <div class="card-body">
-                        I'm an example card component.
-                        <!-- ima game card -->
-                    </div>
-                </div>
-            </div>
-        </div>
+<template>
+    <div class="card-back"
+         v-bind:style="{ width: card.size + 'px', 
+                         height: card.size + 'px'}"
+         @click="clicked"
+    >         <!-- :ref="card.cardId"  -->
+
+        <img 
+            v-show="card.cardFaceShown"
+            v-bind:src="card.url"
+        >
     </div>
 </template>
 
 <script>
     export default {
+        name: "GameCard",
+        data: function () {
+            return {
+                // cardFaceShown: false,
+            }
+        },
+        props: [
+            'card',
+            // 'canClick'
+],
         mounted() {
-            console.log('Card Component mounted.')
-        }
+
+
+        },
+        methods: {
+            clicked: function($event) {
+                if (this.card.canClick == true) {
+                    this.card.cardFaceShown=true;
+                    // console.log(this.card, $event);
+                    this.$emit('event_card_clicked', this.card);
+                    this.card.canClick = false;
+                }
+            },
+
+
+
+        },
+        
     }
 </script>

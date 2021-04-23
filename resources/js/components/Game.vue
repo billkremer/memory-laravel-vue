@@ -1,38 +1,47 @@
 <template>
-    <div class="container" id="gamegame">
-
-
-        <div>
+    <div class="" id="gamegame" ref="gamegame">
+        <div class="container">
+            <div class="row">
             <!-- {{-- left --}} -->
-            <div>
                 <game-difficulty
+                    class="col-sm"
                     :disabled="this.difficultyDisabled"
                     v-on:event_change_difficulty="eventChangeDifficulty($event)"
-            
-                
                 ></game-difficulty>
-                <!-- {{-- difficulty radio select --}} -->
-            </div>
+                <div
+                    id='test'
+                    class="col-sm"
+                >
+                <p>asd<br>
+                asdf<br>
+                asdf</p>
+                <!-- margin-block-start: 1em;
+    margin-block-end: 1em;
+ -->
+  
+                
+                </div>
             <!-- {{-- right --}} -->
-            <div>
-                <!-- {{-- top score --}} -->
+            <!-- <div> -->
+                <!-- {{-- top score  or reset --}} -->
+            <!-- </div> -->
+
             </div>
 
-
-        </div>
 
         <game-board
             :disabled="this.boardDisabled"
             :gameGrid="this.gameGrid"
-            v-on:event_games_started="eventGameStarted($event)"
+            v-on:event_game_started="eventGameStarted($event)"
+            v-on:event_game_finished="eventGameFinished($event)"
+            v-on:event_another_guess="eventAnotherGuess($event)"
         
         ></game-board>
 
         <!-- <button @click="doit()">click</button> -->
 
 
-
-
+        </div>
     </div>
 </template>
 
@@ -49,15 +58,25 @@
                 boardDisabled: false,
                 gameStarted: false,
                 gameFinished: false,
+
+                // TODO refactor difficulty to use this object
+                difficulty: {
+                    'easy': [3,4],
+                    'medium': [4,5],
+                    'hard': [5,6],
+                }
             }
         },
         mounted() {
-            console.log('Game Component mounted.')
+            this.logWelcome();
+                let mm1style = 'border-top-left-radius: 5px; border-top-right-radius: 5px; background: #ffd166; color: black';
+                let mm2style = 'background: #ffd166; color: black';
+                let mm3style = 'border-bottom-left-radius: 5px; border-bottom-right-radius: 30px; background: #ffd166; color: black';
 
-                let fs = " ┌┬┐┌─┐┌┬┐┌─┐┬─┐┬ ┬ \n" +
-                         " │││├┤ ││││ │├┬┘└┬┘ \n" +
-                         " ┴ ┴└─┘┴ ┴└─┘┴└─ ┴  ";
-                console.log("Welcome to your\n"+'%c'+fs, 'background: #ffd166; color: black');
+                let mm1 = " ┌┬┐┌─┐┌┬┐┌─┐┬─┐┬ ┬ \n";
+                let mm2 = " │││├┤ ││││ │├┬┘└┬┘ \n"
+                let mm3 = " ┴ ┴└─┘┴ ┴└─┘┴└─ ┴  ";
+                console.log("Welcome to your\n" + '%c' + mm1 + '%c' + mm2 +'%c'+ mm3 , mm1style, mm2style, mm3style);
 
 
         },
@@ -89,25 +108,50 @@
                 this.gameDifficulty = changeDifficulty;
             },
             eventGameStarted: function(gameStarted) {
-                // this.$emit('event_change_difficulty', changeDifficulty)
-                console.log(gameStarted, 'gamestarted event?');
-                console.log(gameStarted.target.value);
-                this.gameStarted = gameStarted.target.value;
                 this.difficultyDisabled = true;
+                this.gameStarted = true;
+
+                console.log(gameStarted, 'gamestarted event?');
+
             },
             eventGameFinished: function(gameFinished) {
-                // this.$emit('event_change_difficulty', changeDifficulty)
-                console.log(gameFinished, 'gamestarted event?');
-                console.log(gameFinished.target.value);
-                this.gameFinished = gameFinished.target.value;
+                this.difficultyDisabled = false;
+                this.gameFinished = true;
+
+                console.log(gameFinished, 'gamefinished event');
+                // console.log(gameFinished.target.value);
+                // this.gameFinished = gameFinished.target.value;
 
                 // this.difficultyDisabled = false; // create a restart button?
                 // this.boardDisabled = true // un-disable with a restart button
+
+            // TODO:
+            // reset css for game difficulty select 
+            //
+
+
+
+
+            },
+
+
+            eventAnotherGuess: function (guesses) {
+                console.log(guesses, 'guesses');
             },
             doit: function() {
 
                 console.log(this.gameDifficulty);
             },
+            logWelcome: function () {
+                let mm1style = 'border-top-left-radius: 5px; border-top-right-radius: 5px; background: #ffd166; color: black';
+                let mm2style = 'background: #ffd166; color: black';
+                let mm3style = 'border-bottom-left-radius: 5px; border-bottom-right-radius: 30px; background: #ffd166; color: black';
+
+                let mm1 = " ┌┬┐┌─┐┌┬┐┌─┐┬─┐┬ ┬ \n";
+                let mm2 = " │││├┤ ││││ │├┬┘└┬┘ \n"
+                let mm3 = " ┴ ┴└─┘┴ ┴└─┘┴└─ ┴  ";
+                console.log("Welcome to your\n" + '%c' + mm1 + '%c' + mm2 +'%c'+ mm3 , mm1style, mm2style, mm3style);
+            }
         },
 
 
