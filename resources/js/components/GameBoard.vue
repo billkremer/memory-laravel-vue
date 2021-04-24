@@ -1,29 +1,16 @@
 <template>
     <div class="row container" ref="gameboard" id="gameboard">
 
-        <!-- <button @click="doit1()">click</button> -->
 
+        <game-card
+            v-for="card in cardArray"
+            v-bind:card="card"
+            v-bind:key="card.cardId"
+            v-bind:ref="card.cardId"
+            v-on:event_card_clicked="eventCardClicked(card)"
+        ></game-card>
 
-        <!-- <div> -->
-            <game-card
-                v-for="card in cardArray"
-                v-bind:card="card"
-                v-bind:key="card.cardId"
-                v-bind:ref="card.cardId"
-                v-on:event_card_clicked="eventCardClicked(card)"
-            ></game-card>
-
-                <!-- v-bind:canClick="canClick" -->
-
-        <!-- </div> -->
-
-
-
-
-
-
-
-
+        <!-- <br><button @click="doit1()">click</button> -->
 
     </div>
 </template>
@@ -36,7 +23,6 @@
                 availableWidth: 0,
                 cardArray: [],
                 cardsClicked: [],
-                // canClick: true,
                 numberOfGuesses: 0,
                 numberOfMatches: 0,
                 gameStarted: false,
@@ -70,12 +56,13 @@
             },
             cardsClicked: function (newCards, oldCards) {
 
-                if (this.cardsClicked.length >=2 ) {
+                if (this.cardsClicked.length >= 2) {
 
                     if (this.cardsClicked[0].pairValue === this.cardsClicked[1].pairValue
-                        &&  this.cardsClicked[0].cardId !== this.cardsClicked[1].cardId) {
+                        && this.cardsClicked[0].cardId !== this.cardsClicked[1].cardId) {
                         console.log('match');
                         
+ 
                         this.$refs[this.cardsClicked[0].cardId][0].card.canClick = false;
                         this.$refs[this.cardsClicked[1].cardId][0].card.canClick = false;
                         this.cardsClicked = [];
@@ -87,10 +74,12 @@
                         this.$refs[this.cardsClicked[0].cardId][0].card.canClick = true;
                         this.$refs[this.cardsClicked[1].cardId][0].card.canClick = true;
 
-                        this.cardsClicked[0].cardFaceShown = false;
-                        this.cardsClicked[1].cardFaceShown = false;
-                        this.cardsClicked = [];
+                        this.$nextTick(function () {
+                            this.$refs[this.cardsClicked[0].cardId][0].card.cardFaceShown = false;
+                            this.$refs[this.cardsClicked[1].cardId][0].card.cardFaceShown = false;
 
+                            this.cardsClicked = [];
+                        })
                     }
 
                 }
@@ -174,10 +163,10 @@
                     this.numberOfGuesses++;
                 } else if (this.cardsClicked.length == 0 ) {
                     this.cardsClicked.push(card);
-                    console.log('here', card);
+                    // console.log('here', card);
                     // card.canClick = false;
                     // this.$refs[this.cardsClicked[0].cardId][0].card.canClick = false;
-                                        console.log('here2', card);
+                                        // console.log('here2', card);
 
                     this.numberOfGuesses++;
                 }

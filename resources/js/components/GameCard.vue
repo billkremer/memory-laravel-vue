@@ -1,16 +1,24 @@
 
 <template>
+<!-- <transition> -->
     <div class="card-back"
          v-bind:style="{ width: card.size + 'px', 
                          height: card.size + 'px'}"
          @click="clicked"
     >         <!-- :ref="card.cardId"  -->
-
-        <img 
-            v-show="card.cardFaceShown"
-            v-bind:src="card.url"
-        >
+            <transition name="gamecard"  mode="out-in">
+                <!-- <div class="card-cover"
+                v-show="!card.cardFaceShown"
+                key="a"> -->
+                <!-- </div> -->
+                <img 
+                    v-show="card.cardFaceShown"
+                    v-bind:src="card.url"
+                    key="b"
+                >
+            </transition>
     </div>
+<!-- </transition> -->
 </template>
 
 <script>
@@ -26,20 +34,18 @@
             // 'canClick'
 ],
         mounted() {
+            this.$nextTick(function () {
 
-
+            })
         },
         methods: {
             clicked: function($event) {
                 if (this.card.canClick == true) {
-                    this.card.cardFaceShown=true;
-                    // console.log(this.card, $event);
-                    this.$emit('event_card_clicked', this.card);
+                    this.card.cardFaceShown = true;
                     this.card.canClick = false;
+                    this.$emit('event_card_clicked', this.card);
                 }
             },
-
-
 
         },
         

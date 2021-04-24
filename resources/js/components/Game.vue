@@ -69,14 +69,6 @@
         },
         mounted() {
             this.logWelcome();
-                let mm1style = 'border-top-left-radius: 5px; border-top-right-radius: 5px; background: #ffd166; color: black';
-                let mm2style = 'background: #ffd166; color: black';
-                let mm3style = 'border-bottom-left-radius: 5px; border-bottom-right-radius: 30px; background: #ffd166; color: black';
-
-                let mm1 = " ┌┬┐┌─┐┌┬┐┌─┐┬─┐┬ ┬ \n";
-                let mm2 = " │││├┤ ││││ │├┬┘└┬┘ \n"
-                let mm3 = " ┴ ┴└─┘┴ ┴└─┘┴└─ ┴  ";
-                console.log("Welcome to your\n" + '%c' + mm1 + '%c' + mm2 +'%c'+ mm3 , mm1style, mm2style, mm3style);
 
 
         },
