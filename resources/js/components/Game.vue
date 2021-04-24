@@ -5,6 +5,7 @@
             <!-- {{-- left --}} -->
                 <game-difficulty
                     class="col-sm"
+                    :difficultyConfig="this.difficultyConfig"
                     :disabled="this.difficultyDisabled"
                     v-on:event_change_difficulty="eventChangeDifficulty($event)"
                 ></game-difficulty>
@@ -15,9 +16,7 @@
                 <p>asd<br>
                 asdf<br>
                 asdf</p>
-                <!-- margin-block-start: 1em;
-    margin-block-end: 1em;
- -->
+ 
   
                 
                 </div>
@@ -50,21 +49,19 @@
         name: "Game",
         data: function () {
             return {
-                gameDifficulty: 'medium',
-                easyDifficultyArray: [3,4],   // 6 pairs
-                mediumDifficultyArray: [4,5], // 10 pairs
-                hardDifficultyArray: [5,6],   // 15 pairs
+                gameDifficulty: '',
                 difficultyDisabled: false,
                 boardDisabled: false,
                 gameStarted: false,
                 gameFinished: false,
 
-                // TODO refactor difficulty to use this object
-                difficulty: {
-                    'easy': [3,4],
-                    'medium': [4,5],
-                    'hard': [5,6],
-                }
+                // Configuration Array for game grids / difficulty
+                difficultyConfig: [
+                    ['easy',[3,4]],
+                    ['medium', [4,5]],
+                    ['hard', [5,6]],
+                    ['Really hard', [5, 8]],
+                ]
             }
         },
         mounted() {
@@ -74,26 +71,20 @@
         },
         watch: {
             gameDifficulty: function (newDifficulty, oldDifficulty ) {
-                // console.log('new difficulty = ', newDifficulty, 'old difficulty=', oldDifficulty);
-                // console.log(this.gameGrid);
+ 
             },
         },
         computed: {
             gameGrid: function() {
-                switch (this.gameDifficulty) {
-                    case 'easy':
-                        return this.easyDifficultyArray;
-                    case 'medium':
-                        return this.mediumDifficultyArray;
-                    case 'hard':
-                        return this.hardDifficultyArray;                
-                    default:
-                        return this.mediumDifficultyArray;
+                for(let i = 0; i < this.difficultyConfig.length; i++) {
+                    if (this.gameDifficulty == this.difficultyConfig[i][0]) {
+                        return this.difficultyConfig[i][1];
+                    }
                 }
-
-
-            }
-
+                // fallback
+                let x = Math.ceil(this.difficultyConfig.length / 2 ) - 1;
+                return this.difficultyConfig[x][1];
+            },
         },
         methods: {
             eventChangeDifficulty: function(changeDifficulty) {
@@ -117,11 +108,9 @@
                 // this.difficultyDisabled = false; // create a restart button?
                 // this.boardDisabled = true // un-disable with a restart button
 
-            // TODO:
+            // TODO: finish game
             // reset css for game difficulty select 
             //
-
-
 
 
             },
@@ -131,8 +120,8 @@
                 console.log(guesses, 'guesses');
             },
             doit: function() {
-
-                console.log(this.gameDifficulty);
+// TODO remove this later
+                // console.log(this.gameDifficulty);
             },
             logWelcome: function () {
                 let mm1style = 'border-top-left-radius: 5px; border-top-right-radius: 5px; background: #ffd166; color: black';
@@ -143,9 +132,8 @@
                 let mm2 = " │││├┤ ││││ │├┬┘└┬┘ \n"
                 let mm3 = " ┴ ┴└─┘┴ ┴└─┘┴└─ ┴  ";
                 console.log("Welcome to your\n" + '%c' + mm1 + '%c' + mm2 +'%c'+ mm3 , mm1style, mm2style, mm3style);
-            }
+            },
         },
-
 
 
     }

@@ -21,14 +21,14 @@
 
 <script>
     export default {
-        name: "GameBoard",
+        name: "GameTopScores",
         data: function () {
             return {
                 
             }
         },
         mounted() {
-            console.log('Board Component mounted.')
+            console.log('Top Scores Component mounted.')
         }
     }
 </script>

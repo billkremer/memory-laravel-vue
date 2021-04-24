@@ -1,47 +1,29 @@
 <template>
     <div class="container" id="gameDifficulty">
+
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
             <label 
+                v-for="(difficulty, index) in difficultyConfig"
+                v-bind:key="index"
                 class="btn" 
                 :class="{
-                    'btn-outline-warning': this.disabled == false,
-                    'btn-outline-warning active focus': this.pickedDifficulty === 'easy' && this.disabled,
-                    'btn-outline-info': this.pickedDifficulty !== 'easy' && this.disabled,
+                    'btn-outline-warning': disabled == false,
+                    'btn-outline-warning active focus': pickedDifficulty === difficulty[0] && disabled,
+                    'btn-outline-info': pickedDifficulty !== difficulty[0] && disabled,
                 }"
             >
-                <input type="radio" name="difficulty" id="difficulty1" value="easy"
-                    v-model="pickedDifficulty" 
-                    @change="emitChangeDifficulty"
-                    :disabled="disabled"
-                > Easy
-            </label>
-            <label class="btn" 
-                :class="{
-                    'btn-outline-warning': this.disabled == false,
-                    'btn-outline-warning active focus': this.pickedDifficulty === 'medium' && this.disabled,
-                    'btn-outline-info': this.pickedDifficulty !== 'medium' && this.disabled,
-                }"
-            >
-                <input type="radio" name="difficulty" id="difficulty2" value="medium"
+                <input type="radio" name="difficulty" 
+                    :id="'difficulty' + index" 
+                    :value="difficulty[0]"
                     v-model="pickedDifficulty"
                     @change="emitChangeDifficulty"
                     :disabled="disabled"
-                checked> Medium
+                    :checked="pickedDifficulty == difficulty[0] ? 'checked' : ''"
+                > {{difficulty[0]}}
             </label>
-            <label class="btn" 
-                :class="{
-                    'btn-outline-warning': this.disabled == false,
-                    'btn-outline-warning active focus': this.pickedDifficulty === 'hard' && this.disabled,
-                    'btn-outline-info': this.pickedDifficulty !== 'hard' && this.disabled,
-                }"
-            >
-                <input type="radio" name="difficulty" id="difficulty3" value="hard"
-                    v-model="pickedDifficulty"
-                    @change="emitChangeDifficulty"
-                    :disabled="disabled"
-                > Hard
-            </label>
+
         </div>
+
     </div>
 </template>
 
@@ -50,14 +32,17 @@
         name: "GameDifficulty",
         data: function () {
             return {
-                pickedDifficulty: 'medium',
+                pickedDifficulty: '',
             }
         },
         props: [
             'disabled',
+            'difficultyConfig',
         ],
         mounted() {
-            console.log('difficulty Component mounted.')
+            this.$nextTick(function () {
+                this.createDifficultyArray();
+            })
         },
         watch: {
 
@@ -65,6 +50,14 @@
         methods: {
             emitChangeDifficulty: function() {
                 this.$emit('event_change_difficulty', this.pickedDifficulty)
+            },
+            createDifficultyArray: function () {
+                this.difficultyConfig.sort(function(a,b) {
+                    return (a[1][0] * a[1][1] - b[1][0] * b[1][1]);
+                })
+
+                let x = Math.ceil(this.difficultyConfig.length / 2 ) - 1;
+                this.pickedDifficulty = this.difficultyConfig[x][0];
             },
         },
     }

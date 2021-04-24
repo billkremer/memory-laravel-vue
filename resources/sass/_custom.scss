@@ -1,6 +1,4 @@
 body {
-	// text-align: center;
-    // background-color: #F2F9F8;
     margin: 25px;
 
     background: $background-light-blue;  /* fallback for old browsers */
@@ -8,7 +6,9 @@ body {
 
 }
 
-
+label.btn {
+  text-transform: capitalize;
+}
 
 
 h1 {
@@ -54,20 +54,9 @@ div.card-cover {
 .gamecard-leave-active, 
 .gamecard-leave-to {
   transition: all 1s ease;
-    // transition: opacity .2s ease-in-out, transform .2s ease-in-out;
-
 }
 
-// .gamecard-enter, 
-// .gamecard-enter-active, 
-// .gamecard-enter-to, 
-// .gamecard-leave
-// .gamecard-leave-active, 
-// .gamecard-leave-to {
-//   // transition: all 1.5s ease;
-//     transition: opacity .2s ease-in-out, transform .2s ease-in-out;
 
-// }
 
 
 

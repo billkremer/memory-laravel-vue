@@ -36,17 +36,13 @@
             'gameGrid',
         ],
         mounted() {
-            console.log('Board Component mounted.');
             this.$nextTick(function () {
                 this.resetGame();
                 window.addEventListener("resize", this.checkWidth);
-
             });
-
 
         },
         computed: {
-
 
 
         },
@@ -60,9 +56,7 @@
 
                     if (this.cardsClicked[0].pairValue === this.cardsClicked[1].pairValue
                         && this.cardsClicked[0].cardId !== this.cardsClicked[1].cardId) {
-                        console.log('match');
-                        
- 
+                         
                         this.$refs[this.cardsClicked[0].cardId][0].card.canClick = false;
                         this.$refs[this.cardsClicked[1].cardId][0].card.canClick = false;
                         this.cardsClicked = [];
@@ -70,7 +64,6 @@
                         this.numberOfMatches++;
                         
                     } else {
-                        console.log('not a match');
                         this.$refs[this.cardsClicked[0].cardId][0].card.canClick = true;
                         this.$refs[this.cardsClicked[1].cardId][0].card.canClick = true;
 
@@ -150,7 +143,6 @@
 
             eventCardClicked: function(card) {
                 if(this.gameStarted == false) {
-                    console.log('falsestart')
                     this.gameStarted = true;
                     this.emitGameStarted();
                 } // currently this just deactivates the difficulty select
