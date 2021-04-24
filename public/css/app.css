@@ -10951,6 +10951,10 @@ body {
   background: linear-gradient(to right, #2c3e50, #2980b9);
 }
 
+label.btn {
+  text-transform: capitalize;
+}
+
 h1 {
   font: 72px "Audiowide", cursive;
   color: #ffd166;
@@ -10967,6 +10971,29 @@ hr.style-rainbow {
   border: 0;
   height: 4px;
   background: linear-gradient(90deg, #e3342f 0%, #ffd166 25%, #38c172 50%, #3490dc 75%, #6574cd 100%);
+}
+
+div.card-back {
+  display: inline-block;
+  background-color: #f66d9b;
+  margin: 5px 5px 5px 5px;
+  padding: auto auto auto auto;
+}
+
+div.card-cover {
+  background-color: #38c172;
+}
+
+#gameDifficulty {
+  padding: 15px 15px 15px 15px;
+}
+
+.gamecard-enter,
+.gamecard-enter-active,
+.gamecard-enter-to,
+.gamecard-leave .gamecard-leave-active,
+.gamecard-leave-to {
+  transition: all 1s ease;
 }
 
 

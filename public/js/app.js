@@ -1918,48 +1918,44 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Game",
   data: function data() {
     return {
-      gameDifficulty: 'medium',
-      easyDifficultyArray: [3, 4],
-      // 6 pairs
-      mediumDifficultyArray: [4, 5],
-      // 10 pairs
-      hardDifficultyArray: [5, 6],
-      // 15 pairs
+      gameDifficulty: '',
       difficultyDisabled: false,
       boardDisabled: false,
       gameStarted: false,
-      gameFinished: false
+      gameFinished: false,
+      // Configuration Array for game grids / difficulty
+      difficultyConfig: [['easy', [3, 4]], ['medium', [4, 5]], ['hard', [5, 6]], ['Really hard', [5, 8]]]
     };
   },
   mounted: function mounted() {
-    console.log('Game Component mounted.');
-    var fs = " ┌┬┐┌─┐┌┬┐┌─┐┬─┐┬ ┬ \n" + " │││├┤ ││││ │├┬┘└┬┘ \n" + " ┴ ┴└─┘┴ ┴└─┘┴└─ ┴  ";
-    console.log("Welcome to your\n" + '%c' + fs, 'background: #ffd166; color: black');
+    this.logWelcome();
   },
   watch: {
-    gameDifficulty: function gameDifficulty(newDifficulty, oldDifficulty) {// console.log('new difficulty = ', newDifficulty, 'old difficulty=', oldDifficulty);
-      // console.log(this.gameGrid);
-    }
+    gameDifficulty: function gameDifficulty(newDifficulty, oldDifficulty) {}
   },
   computed: {
     gameGrid: function gameGrid() {
-      switch (this.gameDifficulty) {
-        case 'easy':
-          return this.easyDifficultyArray;
+      for (var i = 0; i < this.difficultyConfig.length; i++) {
+        if (this.gameDifficulty == this.difficultyConfig[i][0]) {
+          return this.difficultyConfig[i][1];
+        }
+      } // fallback
 
-        case 'medium':
-          return this.mediumDifficultyArray;
 
-        case 'hard':
-          return this.hardDifficultyArray;
-
-        default:
-          return this.mediumDifficultyArray;
-      }
+      var x = Math.ceil(this.difficultyConfig.length / 2) - 1;
+      return this.difficultyConfig[x][1];
     }
   },
   methods: {
@@ -1967,21 +1963,35 @@ __webpack_require__.r(__webpack_exports__);
       this.gameDifficulty = changeDifficulty;
     },
     eventGameStarted: function eventGameStarted(gameStarted) {
-      // this.$emit('event_change_difficulty', changeDifficulty)
-      console.log(gameStarted, 'gamestarted event?');
-      console.log(gameStarted.target.value);
-      this.gameStarted = gameStarted.target.value;
       this.difficultyDisabled = true;
+      this.gameStarted = true;
+      console.log(gameStarted, 'gamestarted event?');
     },
     eventGameFinished: function eventGameFinished(gameFinished) {
-      // this.$emit('event_change_difficulty', changeDifficulty)
-      console.log(gameFinished, 'gamestarted event?');
-      console.log(gameFinished.target.value);
-      this.gameFinished = gameFinished.target.value; // this.difficultyDisabled = false; // create a restart button?
+      this.difficultyDisabled = false;
+      this.gameFinished = true;
+      console.log(gameFinished, 'gamefinished event'); // console.log(gameFinished.target.value);
+      // this.gameFinished = gameFinished.target.value;
+      // this.difficultyDisabled = false; // create a restart button?
       // this.boardDisabled = true // un-disable with a restart button
+      // TODO: finish game
+      // reset css for game difficulty select 
+      //
     },
-    doit: function doit() {
-      console.log(this.gameDifficulty);
+    eventAnotherGuess: function eventAnotherGuess(guesses) {
+      console.log(guesses, 'guesses');
+    },
+    doit: function doit() {// TODO remove this later
+      // console.log(this.gameDifficulty);
+    },
+    logWelcome: function logWelcome() {
+      var mm1style = 'border-top-left-radius: 5px; border-top-right-radius: 5px; background: #ffd166; color: black';
+      var mm2style = 'background: #ffd166; color: black';
+      var mm3style = 'border-bottom-left-radius: 5px; border-bottom-right-radius: 30px; background: #ffd166; color: black';
+      var mm1 = " ┌┬┐┌─┐┌┬┐┌─┐┬─┐┬ ┬ \n";
+      var mm2 = " │││├┤ ││││ │├┬┘└┬┘ \n";
+      var mm3 = " ┴ ┴└─┘┴ ┴└─┘┴└─ ┴  ";
+      console.log("Welcome to your\n" + '%c' + mm1 + '%c' + mm2 + '%c' + mm3, mm1style, mm2style, mm3style);
     }
   }
 });
@@ -2016,32 +2026,143 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "GameBoard",
   data: function data() {
-    return {};
+    return {
+      availableWidth: 0,
+      cardArray: [],
+      cardsClicked: [],
+      numberOfGuesses: 0,
+      numberOfMatches: 0,
+      gameStarted: false,
+      gameFinished: false
+    };
   },
-  props: ['disabled'],
+  props: ['disabled', 'gameGrid'],
   mounted: function mounted() {
-    console.log('Board Component mounted.');
-    this.checkWidth();
+    this.$nextTick(function () {
+      this.resetGame();
+      window.addEventListener("resize", this.checkWidth);
+    });
   },
-  computed: {
-    cardArray: function cardArray() {}
+  computed: {},
+  watch: {
+    gameGrid: function gameGrid() {
+      this.resetGame();
+    },
+    cardsClicked: function cardsClicked(newCards, oldCards) {
+      if (this.cardsClicked.length >= 2) {
+        if (this.cardsClicked[0].pairValue === this.cardsClicked[1].pairValue && this.cardsClicked[0].cardId !== this.cardsClicked[1].cardId) {
+          this.$refs[this.cardsClicked[0].cardId][0].card.canClick = false;
+          this.$refs[this.cardsClicked[1].cardId][0].card.canClick = false;
+          this.cardsClicked = [];
+          this.numberOfMatches++;
+        } else {
+          this.$refs[this.cardsClicked[0].cardId][0].card.canClick = true;
+          this.$refs[this.cardsClicked[1].cardId][0].card.canClick = true;
+          this.$nextTick(function () {
+            this.$refs[this.cardsClicked[0].cardId][0].card.cardFaceShown = false;
+            this.$refs[this.cardsClicked[1].cardId][0].card.cardFaceShown = false;
+            this.cardsClicked = [];
+          });
+        }
+      }
+    },
+    numberOfMatches: function numberOfMatches(n, o) {
+      if (this.numberOfMatches == this.cardArray.length / 2) {
+        this.emitGameFinished();
+      }
+    }
   },
   methods: {
+    resetGame: function resetGame() {
+      this.canClick = true;
+      this.cardArray = [];
+      this.cardsClicked = [];
+      this.numberOfGuesses = 0;
+      this.checkWidth();
+    },
     checkWidth: function checkWidth() {
-      // this checks the form width to help determine whether headers and extra space is necessary
-      this.availableWidth = window.innerWidth;
+      this.availableWidth = this.$refs.gameboard.clientWidth;
+      this.createCardArray();
+    },
+    createCardArray: function createCardArray() {
+      var cards = [];
+      var numberOfCards = this.gameGrid[0] * this.gameGrid[1]; // https://robohash.org/a?bgset=any&size=300x300&set=set4
+
+      var baseurl = 'https://robohash.org/';
+      var bgParam = '?bgset=any';
+      var setParam = '&set=set' + Math.floor(Math.random() * 4 + 1);
+      var width = (this.availableWidth - 20 * this.gameGrid[1]) / this.gameGrid[1];
+      var height = (window.innerHeight - 310 - 20 * this.gameGrid[0]) / this.gameGrid[0];
+      var robotSize = Math.floor(width);
+
+      if (width > height) {
+        robotSize = Math.floor(height);
+      }
+
+      var sizeParam = '&size=' + robotSize + 'x' + robotSize;
+
+      for (var i = 0; i < numberOfCards; i += 2) {
+        cards[i] = {
+          url: baseurl + i + bgParam + setParam + sizeParam,
+          pairValue: i,
+          cardId: i,
+          size: robotSize,
+          cardFaceShown: false,
+          canClick: true
+        };
+        cards[i + 1] = {
+          url: baseurl + i + bgParam + setParam + sizeParam,
+          pairValue: i,
+          cardId: i + 1,
+          size: robotSize,
+          cardFaceShown: false,
+          canClick: true
+        };
+      }
+
+      this.cardArray = this.shuffleArray(cards);
+    },
+    shuffleArray: function shuffleArray(array) {
+      // https://javascript.info/array-methods#shuffle-an-array
+      for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var _ref = [array[j], array[i]];
+        array[i] = _ref[0];
+        array[j] = _ref[1];
+      }
+
+      return array;
+    },
+    eventCardClicked: function eventCardClicked(card) {
+      if (this.gameStarted == false) {
+        this.gameStarted = true;
+        this.emitGameStarted();
+      } // currently this just deactivates the difficulty select
+      // console.log('gameboard card clicked', this.cardsClicked, card);
+
+
+      if (this.cardsClicked.length > 0 && this.cardsClicked[0].cardId !== card.cardId) {
+        this.cardsClicked.push(card);
+        this.numberOfGuesses++;
+      } else if (this.cardsClicked.length == 0) {
+        this.cardsClicked.push(card); // console.log('here', card);
+        // card.canClick = false;
+        // this.$refs[this.cardsClicked[0].cardId][0].card.canClick = false;
+        // console.log('here2', card);
+
+        this.numberOfGuesses++;
+      }
+
+      this.$emit('event_another_guess', this.numberOfGuesses);
+    },
+    emitGameStarted: function emitGameStarted() {
+      this.$emit('event_game_started', 'started');
+    },
+    emitGameFinished: function emitGameFinished() {
+      this.$emit('event_game_finished', this.numberOfGuesses);
     }
   }
 });
@@ -2077,11 +2198,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  name: "GameCard",
+  data: function data() {
+    return {};
+  },
+  props: ['card'],
   mounted: function mounted() {
-    console.log('Card Component mounted.');
+    this.$nextTick(function () {});
+  },
+  methods: {
+    clicked: function clicked($event) {
+      if (this.card.canClick == true) {
+        this.card.cardFaceShown = true;
+        this.card.canClick = false;
+        this.$emit('event_card_clicked', this.card);
+      }
+    }
   }
 });
 
@@ -2127,39 +2260,30 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "GameDifficulty",
   data: function data() {
     return {
-      pickedDifficulty: 'medium'
+      pickedDifficulty: ''
     };
   },
-  props: ['disabled'],
+  props: ['disabled', 'difficultyConfig'],
   mounted: function mounted() {
-    console.log('difficulty Component mounted.');
+    this.$nextTick(function () {
+      this.createDifficultyArray();
+    });
   },
   watch: {},
   methods: {
     emitChangeDifficulty: function emitChangeDifficulty() {
       this.$emit('event_change_difficulty', this.pickedDifficulty);
+    },
+    createDifficultyArray: function createDifficultyArray() {
+      this.difficultyConfig.sort(function (a, b) {
+        return a[1][0] * a[1][1] - b[1][0] * b[1][1];
+      });
+      var x = Math.ceil(this.difficultyConfig.length / 2) - 1;
+      this.pickedDifficulty = this.difficultyConfig[x][0];
     }
   }
 });
@@ -2199,12 +2323,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: "GameBoard",
+  name: "GameTopScores",
   data: function data() {
     return {};
   },
   mounted: function mounted() {
-    console.log('Board Component mounted.');
+    console.log('Top Scores Component mounted.');
   }
 });
 
@@ -38175,57 +38299,68 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "container" },
-    [
-      _c("div", [
+  return _c("div", { ref: "gamegame", attrs: { id: "gamegame" } }, [
+    _c(
+      "div",
+      { staticClass: "container" },
+      [
         _c(
           "div",
+          { staticClass: "row" },
           [
             _c("game-difficulty", {
-              attrs: { disabled: this.difficultyDisabled },
+              staticClass: "col-sm",
+              attrs: {
+                difficultyConfig: this.difficultyConfig,
+                disabled: this.difficultyDisabled
+              },
               on: {
                 event_change_difficulty: function($event) {
                   return _vm.eventChangeDifficulty($event)
                 }
               }
-            })
+            }),
+            _vm._v(" "),
+            _vm._m(0)
           ],
           1
         ),
         _vm._v(" "),
-        _c("div")
-      ]),
-      _vm._v(" "),
-      _c("game-board", {
-        attrs: {
-          disabled: this.boardDisabled,
-          gameDifficulty: _vm.gameDifficulty
-        },
-        on: {
-          event_games_started: function($event) {
-            return _vm.eventGameStarted($event)
-          }
-        }
-      }),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
+        _c("game-board", {
+          attrs: { disabled: this.boardDisabled, gameGrid: this.gameGrid },
           on: {
-            click: function($event) {
-              return _vm.doit()
+            event_game_started: function($event) {
+              return _vm.eventGameStarted($event)
+            },
+            event_game_finished: function($event) {
+              return _vm.eventGameFinished($event)
+            },
+            event_another_guess: function($event) {
+              return _vm.eventAnotherGuess($event)
             }
           }
-        },
-        [_vm._v("click")]
-      )
-    ],
-    1
-  )
+        })
+      ],
+      1
+    )
+  ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-sm", attrs: { id: "test" } }, [
+      _c("p", [
+        _vm._v("asd"),
+        _c("br"),
+        _vm._v("\n            asdf"),
+        _c("br"),
+        _vm._v("\n            asdf")
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -38248,7 +38383,28 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" })
+  return _c(
+    "div",
+    {
+      ref: "gameboard",
+      staticClass: "row container",
+      attrs: { id: "gameboard" }
+    },
+    _vm._l(_vm.cardArray, function(card) {
+      return _c("game-card", {
+        key: card.cardId,
+        ref: card.cardId,
+        refInFor: true,
+        attrs: { card: card },
+        on: {
+          event_card_clicked: function($event) {
+            return _vm.eventCardClicked(card)
+          }
+        }
+      })
+    }),
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -38273,32 +38429,33 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row justify-content-center" }, [
-        _c("div", { staticClass: "col-md-8" }, [
-          _c("div", { staticClass: "card" }, [
-            _c("div", { staticClass: "card-header" }, [
-              _vm._v("Example Component")
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v(
-                "\n                        I'm an example card component.\n                        "
-              )
-            ])
-          ])
-        ])
+  return _c(
+    "div",
+    {
+      staticClass: "card-back",
+      style: { width: _vm.card.size + "px", height: _vm.card.size + "px" },
+      on: { click: _vm.clicked }
+    },
+    [
+      _c("transition", { attrs: { name: "gamecard", mode: "out-in" } }, [
+        _c("img", {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.card.cardFaceShown,
+              expression: "card.cardFaceShown"
+            }
+          ],
+          key: "b",
+          attrs: { src: _vm.card.url }
+        })
       ])
-    ])
-  }
-]
+    ],
+    1
+  )
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -38321,146 +38478,69 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c(
-      "div",
-      {
-        staticClass: "btn-group btn-group-toggle",
-        attrs: { "data-toggle": "buttons" }
-      },
-      [
-        _c(
-          "label",
-          {
-            staticClass: "btn",
-            class: {
-              "btn-outline-warning": this.disabled == false,
-              "btn-outline-warning active focus":
-                this.pickedDifficulty === "easy" && this.disabled,
-              "btn-outline-info":
-                this.pickedDifficulty !== "easy" && this.disabled
-            }
-          },
-          [
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.pickedDifficulty,
-                  expression: "pickedDifficulty"
-                }
-              ],
-              attrs: {
-                type: "radio",
-                name: "difficulty",
-                id: "difficulty1",
-                value: "easy",
-                disabled: _vm.disabled
-              },
-              domProps: { checked: _vm._q(_vm.pickedDifficulty, "easy") },
-              on: {
-                change: [
-                  function($event) {
-                    _vm.pickedDifficulty = "easy"
-                  },
-                  _vm.emitChangeDifficulty
-                ]
+  return _c(
+    "div",
+    { staticClass: "container", attrs: { id: "gameDifficulty" } },
+    [
+      _c(
+        "div",
+        {
+          staticClass: "btn-group btn-group-toggle",
+          attrs: { "data-toggle": "buttons" }
+        },
+        _vm._l(_vm.difficultyConfig, function(difficulty, index) {
+          return _c(
+            "label",
+            {
+              key: index,
+              staticClass: "btn",
+              class: {
+                "btn-outline-warning": _vm.disabled == false,
+                "btn-outline-warning active focus":
+                  _vm.pickedDifficulty === difficulty[0] && _vm.disabled,
+                "btn-outline-info":
+                  _vm.pickedDifficulty !== difficulty[0] && _vm.disabled
               }
-            }),
-            _vm._v(" Easy\n    ")
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "label",
-          {
-            staticClass: "btn",
-            class: {
-              "btn-outline-warning": this.disabled == false,
-              "btn-outline-warning active focus":
-                this.pickedDifficulty === "medium" && this.disabled,
-              "btn-outline-info":
-                this.pickedDifficulty !== "medium" && this.disabled
-            }
-          },
-          [
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.pickedDifficulty,
-                  expression: "pickedDifficulty"
+            },
+            [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.pickedDifficulty,
+                    expression: "pickedDifficulty"
+                  }
+                ],
+                attrs: {
+                  type: "radio",
+                  name: "difficulty",
+                  id: "difficulty" + index,
+                  disabled: _vm.disabled
+                },
+                domProps: {
+                  value: difficulty[0],
+                  checked:
+                    _vm.pickedDifficulty == difficulty[0] ? "checked" : "",
+                  checked: _vm._q(_vm.pickedDifficulty, difficulty[0])
+                },
+                on: {
+                  change: [
+                    function($event) {
+                      _vm.pickedDifficulty = difficulty[0]
+                    },
+                    _vm.emitChangeDifficulty
+                  ]
                 }
-              ],
-              attrs: {
-                type: "radio",
-                name: "difficulty",
-                id: "difficulty2",
-                value: "medium",
-                disabled: _vm.disabled,
-                checked: ""
-              },
-              domProps: { checked: _vm._q(_vm.pickedDifficulty, "medium") },
-              on: {
-                change: [
-                  function($event) {
-                    _vm.pickedDifficulty = "medium"
-                  },
-                  _vm.emitChangeDifficulty
-                ]
-              }
-            }),
-            _vm._v(" Medium\n    ")
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "label",
-          {
-            staticClass: "btn",
-            class: {
-              "btn-outline-warning": this.disabled == false,
-              "btn-outline-warning active focus":
-                this.pickedDifficulty === "hard" && this.disabled,
-              "btn-outline-info":
-                this.pickedDifficulty !== "hard" && this.disabled
-            }
-          },
-          [
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.pickedDifficulty,
-                  expression: "pickedDifficulty"
-                }
-              ],
-              attrs: {
-                type: "radio",
-                name: "difficulty",
-                id: "difficulty3",
-                value: "hard",
-                disabled: _vm.disabled
-              },
-              domProps: { checked: _vm._q(_vm.pickedDifficulty, "hard") },
-              on: {
-                change: [
-                  function($event) {
-                    _vm.pickedDifficulty = "hard"
-                  },
-                  _vm.emitChangeDifficulty
-                ]
-              }
-            }),
-            _vm._v(" Hard\n    ")
-          ]
-        )
-      ]
-    )
-  ])
+              }),
+              _vm._v(" " + _vm._s(difficulty[0]) + "\n        ")
+            ]
+          )
+        }),
+        0
+      )
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
