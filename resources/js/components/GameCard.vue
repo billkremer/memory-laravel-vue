@@ -11,6 +11,7 @@
                 v-show="card.cardFaceShown"
                 v-bind:src="card.url"
                 key="b"
+                :alt="'robot number ' + card.pairValue"
             >
         </transition>
     </div>

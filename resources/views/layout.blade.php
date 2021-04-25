@@ -8,6 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
+    <link rel="icon" href="/favicon.png?v=2" type="image/png" />
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js', env('REDIRECT_HTTPS')) }}" defer></script>
@@ -21,6 +22,7 @@
         <h2 id="quote">Without memory, there is no culture. 
             <br>Without memory, there would be no civilization, no society, no future.
             <br>-- Elie Wiesel</h2>
+        <small class="robohash"> Robots lovingly delivered by <a rel=”noopener” target="_blank" href="https://robohash.org/">Robohash.org</a></small
     </section>
 
     <div id="app">

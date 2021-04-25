@@ -102,8 +102,10 @@
 
                 // https://robohash.org/a?bgset=any&size=300x300&set=set4
                 let baseurl = 'https://robohash.org/';
+                let randSeed = String(Date.now()).slice(-6);
+
                 let bgParam = '?bgset=any';
-                let setParam = '&set=set' + Math.floor((Math.random() * 4) + 1);
+                let setParam = '&set=set' + Math.floor((Math.random() * 5) + 1);
 
                 let width = (this.availableWidth - 20 * (this.gameGrid[1] )) / this.gameGrid[1];
                 let height = (window.innerHeight - 310 - 20 * (this.gameGrid[0])) / this.gameGrid[0];
@@ -114,13 +116,17 @@
 
 
                 for (let i = 0; i < numberOfCards; i += 2) {
-                    cards[i] = {url: (baseurl + i + bgParam + setParam + sizeParam),
+                    cards[i] = {url: (baseurl + i + randSeed + bgParam + setParam + sizeParam),
+                    // TODO add a substring of epoch time between i & bgparam
+
                                 pairValue: i, 
                                 cardId: i, 
                                 size: robotSize,
                                 cardFaceShown: false,
                                 canClick: true, }
-                    cards[i+1] = {url: (baseurl + i + bgParam + setParam + sizeParam),
+                    cards[i+1] = {url: (baseurl + i + randSeed + bgParam + setParam + sizeParam),
+                                        // TODO add a substring of epoch time between i & bgparam
+
                                 pairValue: i,
                                 cardId: (i + 1),
                                 size: robotSize,
