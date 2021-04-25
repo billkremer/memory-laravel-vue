@@ -2092,8 +2092,9 @@ __webpack_require__.r(__webpack_exports__);
       var numberOfCards = this.gameGrid[0] * this.gameGrid[1]; // https://robohash.org/a?bgset=any&size=300x300&set=set4
 
       var baseurl = 'https://robohash.org/';
+      var randSeed = String(Date.now()).slice(-6);
       var bgParam = '?bgset=any';
-      var setParam = '&set=set' + Math.floor(Math.random() * 4 + 1);
+      var setParam = '&set=set' + Math.floor(Math.random() * 5 + 1);
       var width = (this.availableWidth - 20 * this.gameGrid[1]) / this.gameGrid[1];
       var height = (window.innerHeight - 310 - 20 * this.gameGrid[0]) / this.gameGrid[0];
       var robotSize = Math.floor(width);
@@ -2106,7 +2107,8 @@ __webpack_require__.r(__webpack_exports__);
 
       for (var i = 0; i < numberOfCards; i += 2) {
         cards[i] = {
-          url: baseurl + i + bgParam + setParam + sizeParam,
+          url: baseurl + i + randSeed + bgParam + setParam + sizeParam,
+          // TODO add a substring of epoch time between i & bgparam
           pairValue: i,
           cardId: i,
           size: robotSize,
@@ -2114,7 +2116,8 @@ __webpack_require__.r(__webpack_exports__);
           canClick: true
         };
         cards[i + 1] = {
-          url: baseurl + i + bgParam + setParam + sizeParam,
+          url: baseurl + i + randSeed + bgParam + setParam + sizeParam,
+          // TODO add a substring of epoch time between i & bgparam
           pairValue: i,
           cardId: i + 1,
           size: robotSize,
@@ -2180,6 +2183,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+//
 //
 //
 //
@@ -38448,7 +38452,10 @@ var render = function() {
             }
           ],
           key: "b",
-          attrs: { src: _vm.card.url }
+          attrs: {
+            src: _vm.card.url,
+            alt: "robot number " + _vm.card.pairValue
+          }
         })
       ])
     ],
