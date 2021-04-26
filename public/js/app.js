@@ -1926,6 +1926,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Game",
   data: function data() {
@@ -1935,15 +1937,22 @@ __webpack_require__.r(__webpack_exports__);
       boardDisabled: false,
       gameStarted: false,
       gameFinished: false,
+      newGameStartedFlag: false,
       // Configuration Array for game grids / difficulty
-      difficultyConfig: [['easy', [3, 4]], ['medium', [4, 5]], ['hard', [5, 6]], ['Really hard', [5, 8]]]
+      difficultyConfig: [['easy', [3, 4]], ['medium', [4, 5]], ['hard', [5, 6]] // ['Really hard', [5, 8]],
+      ]
     };
   },
   mounted: function mounted() {
     this.logWelcome();
   },
   watch: {
-    gameDifficulty: function gameDifficulty(newDifficulty, oldDifficulty) {}
+    gameDifficulty: function gameDifficulty(newDifficulty, oldDifficulty) {
+      console.log(newDifficulty, oldDifficulty);
+    },
+    newGameStartedFlag: function newGameStartedFlag(n, o) {
+      console.log(n, o, 'flag');
+    }
   },
   computed: {
     gameGrid: function gameGrid() {
@@ -1960,15 +1969,23 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     eventChangeDifficulty: function eventChangeDifficulty(changeDifficulty) {
-      this.gameDifficulty = changeDifficulty;
+      console.log('herefinally', this.gameDifficulty, changeDifficulty);
+
+      if (this.gameDifficulty === changeDifficulty) {} else {
+        this.gameDifficulty = changeDifficulty;
+      }
+
+      this.newGameStartedFlag = true;
     },
     eventGameStarted: function eventGameStarted(gameStarted) {
       this.difficultyDisabled = true;
       this.gameStarted = true;
+      this.gameFinished = false;
       console.log(gameStarted, 'gamestarted event?');
     },
     eventGameFinished: function eventGameFinished(gameFinished) {
       this.difficultyDisabled = false;
+      this.gameStarted = false;
       this.gameFinished = true;
       console.log(gameFinished, 'gamefinished event'); // console.log(gameFinished.target.value);
       // this.gameFinished = gameFinished.target.value;
@@ -1977,6 +1994,10 @@ __webpack_require__.r(__webpack_exports__);
       // TODO: finish game
       // reset css for game difficulty select 
       //
+    },
+    eventGameReset: function eventGameReset(x) {
+      // this.$nextTick(function () {
+      this.newGameStartedFlag = false; // })
     },
     eventAnotherGuess: function eventAnotherGuess(guesses) {
       console.log(guesses, 'guesses');
@@ -2035,11 +2056,11 @@ __webpack_require__.r(__webpack_exports__);
       cardsClicked: [],
       numberOfGuesses: 0,
       numberOfMatches: 0,
-      gameStarted: false,
-      gameFinished: false
+      gameStarted: false // gameFinished: false,
+
     };
   },
-  props: ['disabled', 'gameGrid'],
+  props: ['disabled', 'gameGrid', 'newGameStartedFlag'],
   mounted: function mounted() {
     this.$nextTick(function () {
       this.resetGame();
@@ -2048,6 +2069,16 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {},
   watch: {
+    newGameStartedFlag: function newGameStartedFlag(newGS, oldGS) {
+      console.log(newGS, oldGS);
+
+      if (newGS == true) {
+        this.resetGame();
+        this.$nextTick(function () {
+          this.$emit('event_game_reset', 'reset');
+        });
+      }
+    },
     gameGrid: function gameGrid() {
       this.resetGame();
     },
@@ -2081,6 +2112,8 @@ __webpack_require__.r(__webpack_exports__);
       this.cardArray = [];
       this.cardsClicked = [];
       this.numberOfGuesses = 0;
+      this.numberOfMatches = 0;
+      this.gameStarted = false;
       this.checkWidth();
     },
     checkWidth: function checkWidth() {
@@ -2108,7 +2141,6 @@ __webpack_require__.r(__webpack_exports__);
       for (var i = 0; i < numberOfCards; i += 2) {
         cards[i] = {
           url: baseurl + i + randSeed + bgParam + setParam + sizeParam,
-          // TODO add a substring of epoch time between i & bgparam
           pairValue: i,
           cardId: i,
           size: robotSize,
@@ -2117,7 +2149,6 @@ __webpack_require__.r(__webpack_exports__);
         };
         cards[i + 1] = {
           url: baseurl + i + randSeed + bgParam + setParam + sizeParam,
-          // TODO add a substring of epoch time between i & bgparam
           pairValue: i,
           cardId: i + 1,
           size: robotSize,
@@ -2264,6 +2295,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "GameDifficulty",
   data: function data() {
@@ -2277,17 +2311,29 @@ __webpack_require__.r(__webpack_exports__);
       this.createDifficultyArray();
     });
   },
-  watch: {},
+  watch: {
+    disabled: function disabled(newDis, oldDis) {
+      console.log(newDis, oldDis, 'diffiulcty disable change in gamedifficulty');
+
+      if (newDis == false && oldDis == true) {
+        this.createDifficultyArray();
+      }
+    }
+  },
   methods: {
     emitChangeDifficulty: function emitChangeDifficulty() {
       this.$emit('event_change_difficulty', this.pickedDifficulty);
     },
     createDifficultyArray: function createDifficultyArray() {
+      console.log('redoing difficulty array');
       this.difficultyConfig.sort(function (a, b) {
         return a[1][0] * a[1][1] - b[1][0] * b[1][1];
       });
-      var x = Math.ceil(this.difficultyConfig.length / 2) - 1;
-      this.pickedDifficulty = this.difficultyConfig[x][0];
+
+      if (this.pickedDifficulty === '') {
+        var x = Math.ceil(this.difficultyConfig.length / 2) - 1;
+        this.pickedDifficulty = this.difficultyConfig[x][0];
+      }
     }
   }
 });
@@ -38331,7 +38377,11 @@ var render = function() {
         ),
         _vm._v(" "),
         _c("game-board", {
-          attrs: { disabled: this.boardDisabled, gameGrid: this.gameGrid },
+          attrs: {
+            disabled: this.boardDisabled,
+            gameGrid: this.gameGrid,
+            newGameStartedFlag: this.newGameStartedFlag
+          },
           on: {
             event_game_started: function($event) {
               return _vm.eventGameStarted($event)
@@ -38341,6 +38391,9 @@ var render = function() {
             },
             event_another_guess: function($event) {
               return _vm.eventAnotherGuess($event)
+            },
+            event_game_reset: function($event) {
+              return _vm.eventGameReset($event)
             }
           }
         })
@@ -38358,9 +38411,9 @@ var staticRenderFns = [
       _c("p", [
         _vm._v("asd"),
         _c("br"),
-        _vm._v("\n            asdf"),
+        _vm._v("\n                asdf"),
         _c("br"),
-        _vm._v("\n            asdf")
+        _vm._v("\n                asdf")
       ])
     ])
   }
@@ -38504,10 +38557,11 @@ var render = function() {
               class: {
                 "btn-outline-warning": _vm.disabled == false,
                 "btn-outline-warning active focus":
-                  _vm.pickedDifficulty === difficulty[0] && _vm.disabled,
+                  _vm.pickedDifficulty === difficulty[0],
                 "btn-outline-info":
                   _vm.pickedDifficulty !== difficulty[0] && _vm.disabled
-              }
+              },
+              on: { click: _vm.emitChangeDifficulty }
             },
             [
               _c("input", {

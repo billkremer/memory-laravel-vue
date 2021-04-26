@@ -2,16 +2,19 @@
     <div class="container" id="gameDifficulty">
 
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
+
             <label 
                 v-for="(difficulty, index) in difficultyConfig"
                 v-bind:key="index"
+                @click='emitChangeDifficulty'
                 class="btn" 
                 :class="{
                     'btn-outline-warning': disabled == false,
-                    'btn-outline-warning active focus': pickedDifficulty === difficulty[0] && disabled,
+                    'btn-outline-warning active focus': pickedDifficulty === difficulty[0],
                     'btn-outline-info': pickedDifficulty !== difficulty[0] && disabled,
                 }"
-            >
+            >                 <!-- @click="emitChangeDifficulty" emitRestartGame -->
+
                 <input type="radio" name="difficulty" 
                     :id="'difficulty' + index" 
                     :value="difficulty[0]"
@@ -45,19 +48,27 @@
             })
         },
         watch: {
+            disabled: function (newDis, oldDis) {
+                console.log(newDis, oldDis, 'diffiulcty disable change in gamedifficulty')
+                if (newDis == false && oldDis == true) {
+                    this.createDifficultyArray();
 
+                }
+            },
         },
         methods: {
             emitChangeDifficulty: function() {
                 this.$emit('event_change_difficulty', this.pickedDifficulty)
             },
             createDifficultyArray: function () {
+                console.log('redoing difficulty array')
                 this.difficultyConfig.sort(function(a,b) {
                     return (a[1][0] * a[1][1] - b[1][0] * b[1][1]);
                 })
-
-                let x = Math.ceil(this.difficultyConfig.length / 2 ) - 1;
-                this.pickedDifficulty = this.difficultyConfig[x][0];
+                if (this.pickedDifficulty === '') {
+                    let x = Math.ceil(this.difficultyConfig.length / 2 ) - 1;
+                    this.pickedDifficulty = this.difficultyConfig[x][0];
+                }
             },
         },
     }

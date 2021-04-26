@@ -26,7 +26,7 @@
                 numberOfGuesses: 0,
                 numberOfMatches: 0,
                 gameStarted: false,
-                gameFinished: false,
+                // gameFinished: false,
 
 
             }
@@ -34,6 +34,7 @@
         props: [
             'disabled',
             'gameGrid',
+            'newGameStartedFlag'
         ],
         mounted() {
             this.$nextTick(function () {
@@ -47,6 +48,15 @@
 
         },
         watch: {
+            newGameStartedFlag: function (newGS, oldGS) {
+                console.log(newGS, oldGS)
+                if (newGS == true) {
+                    this.resetGame();
+                        this.$nextTick(function () {
+                            this.$emit('event_game_reset', 'reset');
+                        })
+                }
+            },
             gameGrid: function() {
                 this.resetGame();
             },
@@ -89,6 +99,8 @@
                 this.cardArray = [];
                 this.cardsClicked = [];
                 this.numberOfGuesses = 0;
+                this.numberOfMatches = 0;
+                this.gameStarted = false; 
                 this.checkWidth();
                 
             },
@@ -117,16 +129,12 @@
 
                 for (let i = 0; i < numberOfCards; i += 2) {
                     cards[i] = {url: (baseurl + i + randSeed + bgParam + setParam + sizeParam),
-                    // TODO add a substring of epoch time between i & bgparam
-
                                 pairValue: i, 
                                 cardId: i, 
                                 size: robotSize,
                                 cardFaceShown: false,
                                 canClick: true, }
                     cards[i+1] = {url: (baseurl + i + randSeed + bgParam + setParam + sizeParam),
-                                        // TODO add a substring of epoch time between i & bgparam
-
                                 pairValue: i,
                                 cardId: (i + 1),
                                 size: robotSize,

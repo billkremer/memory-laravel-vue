@@ -1,14 +1,11 @@
 @extends('layout')
 
 @section('content')
-<div class="container">
+    <div class="container">
 
 
-    <hr class="style-rainbow"/>
-
-<game-game></game-game>
-
-    
-</div> {{--  container end --}}
-
+        <game-game></game-game>
+        
+    </div> {{--  container end --}}
+<?php print_r($_SERVER['REMOTE_ADDR']) ?>
 @endsection

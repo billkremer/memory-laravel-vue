@@ -13,9 +13,9 @@
                     id='test'
                     class="col-sm"
                 >
-                <p>asd<br>
-                asdf<br>
-                asdf</p>
+                    <p>asd<br>
+                    asdf<br>
+                    asdf</p>
  
   
                 
@@ -31,10 +31,12 @@
         <game-board
             :disabled="this.boardDisabled"
             :gameGrid="this.gameGrid"
+            :newGameStartedFlag="this.newGameStartedFlag"
             v-on:event_game_started="eventGameStarted($event)"
             v-on:event_game_finished="eventGameFinished($event)"
             v-on:event_another_guess="eventAnotherGuess($event)"
-        
+            v-on:event_game_reset="eventGameReset($event)"
+
         ></game-board>
 
         <!-- <button @click="doit()">click</button> -->
@@ -54,13 +56,14 @@
                 boardDisabled: false,
                 gameStarted: false,
                 gameFinished: false,
+                newGameStartedFlag: false,
 
                 // Configuration Array for game grids / difficulty
                 difficultyConfig: [
                     ['easy',[3,4]],
                     ['medium', [4,5]],
                     ['hard', [5,6]],
-                    ['Really hard', [5, 8]],
+                    // ['Really hard', [5, 8]],
                 ]
             }
         },
@@ -71,8 +74,11 @@
         },
         watch: {
             gameDifficulty: function (newDifficulty, oldDifficulty ) {
- 
+                console.log(newDifficulty, oldDifficulty);
             },
+            newGameStartedFlag: function(n,o) {
+                console.log(n,o,'flag');
+            }
         },
         computed: {
             gameGrid: function() {
@@ -88,17 +94,26 @@
         },
         methods: {
             eventChangeDifficulty: function(changeDifficulty) {
-                this.gameDifficulty = changeDifficulty;
+                console.log('herefinally', this.gameDifficulty, changeDifficulty)
+                if (this.gameDifficulty === changeDifficulty) {
+
+                } else {
+                    this.gameDifficulty = changeDifficulty;
+                }
+
+                this.newGameStartedFlag = true;
+
             },
             eventGameStarted: function(gameStarted) {
                 this.difficultyDisabled = true;
                 this.gameStarted = true;
-
+                this.gameFinished = false;
                 console.log(gameStarted, 'gamestarted event?');
 
             },
             eventGameFinished: function(gameFinished) {
                 this.difficultyDisabled = false;
+                this.gameStarted = false;
                 this.gameFinished = true;
 
                 console.log(gameFinished, 'gamefinished event');
@@ -116,6 +131,11 @@
             },
 
 
+            eventGameReset: function (x) {
+                // this.$nextTick(function () {
+                    this.newGameStartedFlag = false;
+                // })
+            },
             eventAnotherGuess: function (guesses) {
                 console.log(guesses, 'guesses');
             },
