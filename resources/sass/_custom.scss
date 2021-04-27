@@ -60,5 +60,9 @@ small.robohash {
   color: $robohash;
 }
 
-
+p.cardImageFallback {
+    position: absolute;
+  	font: 3em 'Audiowide', cursive;
+    margin: auto auto auto auto;
+}
 

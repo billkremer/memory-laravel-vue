@@ -57,6 +57,7 @@
                 gameStarted: false,
                 gameFinished: false,
                 newGameStartedFlag: false,
+                scoresObject: {},
 
                 // Configuration Array for game grids / difficulty
                 difficultyConfig: [
@@ -74,10 +75,10 @@
         },
         watch: {
             gameDifficulty: function (newDifficulty, oldDifficulty ) {
-                console.log(newDifficulty, oldDifficulty);
+                // console.log(newDifficulty, oldDifficulty);
             },
             newGameStartedFlag: function(n,o) {
-                console.log(n,o,'flag');
+                // console.log(n,o,'flag');
             }
         },
         computed: {
@@ -94,7 +95,6 @@
         },
         methods: {
             eventChangeDifficulty: function(changeDifficulty) {
-                console.log('herefinally', this.gameDifficulty, changeDifficulty)
                 if (this.gameDifficulty === changeDifficulty) {
 
                 } else {
@@ -117,6 +117,12 @@
                 this.gameFinished = true;
 
                 console.log(gameFinished, 'gamefinished event');
+
+                // get name and send result to backend
+                this.saveScore();
+            this.$nextTick(function () {
+                this.getScore();
+            })
                 // console.log(gameFinished.target.value);
                 // this.gameFinished = gameFinished.target.value;
 
@@ -139,6 +145,45 @@
             eventAnotherGuess: function (guesses) {
                 console.log(guesses, 'guesses');
             },
+
+            getScore: function () {
+                console.log('getting score');
+
+                // this.scoresObject
+
+                axios.get('get-scores')
+                .then(function (response) {
+                    console.log(response );
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });;
+// console.log(data);
+
+
+            },
+            saveScore: function () {
+                console.log('saving score');
+                this.scoresObject = {'a': ['name', '10 clicks', 'easy']};
+
+                axios.post('save-scores', {
+                    data: this.scoresObject,
+                })
+                .then(function (response) {
+                    console.log(response );
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+
+
+            },
+
+
+
+
+
             doit: function() {
 // TODO remove this later
                 // console.log(this.gameDifficulty);
@@ -153,6 +198,7 @@
                 let mm3 = " ┴ ┴└─┘┴ ┴└─┘┴└─ ┴  ";
                 console.log("Welcome to your\n" + '%c' + mm1 + '%c' + mm2 +'%c'+ mm3 , mm1style, mm2style, mm3style);
             },
+
         },
 
 

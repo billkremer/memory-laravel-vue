@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('home');
 });
+// Route::post('/save-scores', function () {
+
+// });
+Route::get('/get-scores',[HomeController::class, 'show']);
+Route::post('/save-scores',[HomeController::class, 'store']);
 
 
 

@@ -49,7 +49,6 @@
         },
         watch: {
             newGameStartedFlag: function (newGS, oldGS) {
-                console.log(newGS, oldGS)
                 if (newGS == true) {
                     this.resetGame();
                         this.$nextTick(function () {

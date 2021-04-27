@@ -13,7 +13,7 @@
                     'btn-outline-warning active focus': pickedDifficulty === difficulty[0],
                     'btn-outline-info': pickedDifficulty !== difficulty[0] && disabled,
                 }"
-            >                 <!-- @click="emitChangeDifficulty" emitRestartGame -->
+            >
 
                 <input type="radio" name="difficulty" 
                     :id="'difficulty' + index" 
@@ -49,10 +49,8 @@
         },
         watch: {
             disabled: function (newDis, oldDis) {
-                console.log(newDis, oldDis, 'diffiulcty disable change in gamedifficulty')
                 if (newDis == false && oldDis == true) {
                     this.createDifficultyArray();
-
                 }
             },
         },
@@ -61,7 +59,6 @@
                 this.$emit('event_change_difficulty', this.pickedDifficulty)
             },
             createDifficultyArray: function () {
-                console.log('redoing difficulty array')
                 this.difficultyConfig.sort(function(a,b) {
                     return (a[1][0] * a[1][1] - b[1][0] * b[1][1]);
                 })

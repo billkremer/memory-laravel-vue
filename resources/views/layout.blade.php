@@ -22,7 +22,7 @@
         <h2 id="quote">Without memory, there is no culture. 
             <br>Without memory, there would be no civilization, no society, no future.
             <br>-- Elie Wiesel</h2>
-        <small class="robohash"> Robots lovingly delivered by <a rel=”noopener” target="_blank" href="https://robohash.org/">Robohash.org</a></small>
+        <small class="robohash"> Robots by <a rel=”noopener” target="_blank" href="https://robohash.org/">Robohash.org</a></small>
         <hr class="style-rainbow"/>
     </section>
 
