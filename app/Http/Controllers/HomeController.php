@@ -18,9 +18,13 @@ class HomeController extends Controller
 
         $x = $this->getCookie($request, 'score');
 
-        // $y = 
+        $y = getUserIP();
 
-        return view('home', ['score' => $x]);
+
+
+        
+
+        return view('home', ['score' => $x, 'visitor' => $y]);
 
     }
 
@@ -113,6 +117,36 @@ class HomeController extends Controller
         // return json_decode($request->cookie($cookieName));
         return $request->cookie($cookieName);
         // return $value;
+
+    }
+
+    /**
+     * get the ip address for logging.
+     *
+     * @return String $ipaddress
+     */
+
+    private function getUserIP() {
+
+        $ipaddress = '';
+        if (!empty(getenv('HTTP_CLIENT_IP')))
+            $ipaddress = 'HTTP_CLIENT_IP '.getenv('HTTP_CLIENT_IP');
+        else if(!empty(getenv('HTTP_X_FORWARDED_FOR')))
+            $ipaddress = 'HTTP_X_FORWARDED_FOR '.getenv('HTTP_X_FORWARDED_FOR');
+        else if(!empty(getenv('HTTP_X_FORWARDED')))
+            $ipaddress = 'HTTP_X_FORWARDED '.getenv('HTTP_X_FORWARDED');
+        else if(!empty(getenv('HTTP_X_CLUSTER_CLIENT_IP')))
+            $ipaddress = 'HTTP_X_CLUSTER_CLIENT_IP '.getenv('HTTP_X_CLUSTER_CLIENT_IP');
+        else if(!empty(getenv('HTTP_FORWARDED_FOR')))
+            $ipaddress = 'HTTP_FORWARDED_FOR '.getenv('HTTP_FORWARDED_FOR');
+        else if(!empty(getenv('HTTP_FORWARDED')))
+            $ipaddress = 'HTTP_FORWARDED '.getenv('HTTP_FORWARDED');
+        else if(!empty(getenv('REMOTE_ADDR')))
+            $ipaddress = 'REMOTE_ADDR '.getenv('REMOTE_ADDR');
+        else
+            $ipaddress = 'UNKNOWN';
+        return $ipaddress;
+
 
     }
 
