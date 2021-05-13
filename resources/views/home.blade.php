@@ -7,6 +7,6 @@
         <game-game></game-game>
         
     </div> {{--  container end --}}
-<?php // print_r($_SERVER['REMOTE_ADDR']);
+<?php print_r($_SERVER['REMOTE_ADDR']);
 // print_r(getenv()); ?>
 @endsection

@@ -11000,4 +11000,10 @@ small.robohash {
   color: #658c4d;
 }
 
+p.cardImageFallback {
+  position: absolute;
+  font: 3em "Audiowide", cursive;
+  margin: auto auto auto auto;
+}
+
 

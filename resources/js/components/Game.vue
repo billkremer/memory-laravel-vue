@@ -57,7 +57,7 @@
                 gameStarted: false,
                 gameFinished: false,
                 newGameStartedFlag: false,
-                scoresObject: {},
+                // scoresObject: {},
 
                 // Configuration Array for game grids / difficulty
                 difficultyConfig: [
@@ -65,7 +65,12 @@
                     ['medium', [4,5]],
                     ['hard', [5,6]],
                     // ['Really hard', [5, 8]],
-                ]
+                ],
+                topScores: [ // 'difficulty', number: clicks, number: seconds to complete, date
+                    ['easy', 999, 999, '1 Jan 2021'],
+                    ['medium', 999, 999, '1 Jan 2021' ],
+                    ['hard', 999, 999, '1 Jan 2021'],
+                ],
             }
         },
         mounted() {
@@ -94,6 +99,45 @@
             },
         },
         methods: {
+            updateTopScores: function(score) {
+                // score = ['difficulty', number: clicks, number: seconds to complete, date string]
+                if (score.length !== 4) {
+                    return false;
+                }
+                        // TODO which three scores to keep
+
+                // let flag = false;
+
+                for (let i = 0; i < this.topScores.length; i++) {
+                    if (this.topScores[i][0] === score[0]) {
+                        // same difficulty
+                        if (this.topScores[i][1] < score[1]) {
+                            // fewer clicks
+                            this.topScores[i] = score;
+
+                        } else if (this.topScores[i][1] === score[1]) {
+                            // same clicks
+                            if (this.topScores[i][2] < score[2]) {
+                                // better time
+                                this.topScores[i] = score;
+
+                            }
+
+                        }
+
+
+                        
+                        // this.topScores[i] = score;
+                        // flag = true;
+                    }
+
+                    // if (flag == false) {
+                    //     this.topScores.push(score)
+                    // }
+                    
+                }
+                return true;
+            },
             eventChangeDifficulty: function(changeDifficulty) {
                 if (this.gameDifficulty === changeDifficulty) {
 
@@ -112,6 +156,12 @@
 
             },
             eventGameFinished: function(gameFinished) {
+                
+
+
+
+
+
                 this.difficultyDisabled = false;
                 this.gameStarted = false;
                 this.gameFinished = true;
@@ -149,11 +199,11 @@
             getScore: function () {
                 console.log('getting score');
 
-                // this.scoresObject
+                // this.topScores
 
                 axios.get('get-scores')
                 .then(function (response) {
-                    console.log(response );
+                    console.log(response.data, 'scoredata' );
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -164,10 +214,10 @@
             },
             saveScore: function () {
                 console.log('saving score');
-                this.scoresObject = {'a': ['name', '10 clicks', 'easy']};
+                // this.scoresObject = {'a': ['name', '10 clicks', 'easy']}; // not using
 
                 axios.post('save-scores', {
-                    data: this.scoresObject,
+                    data: this.topScores,
                 })
                 .then(function (response) {
                     console.log(response );

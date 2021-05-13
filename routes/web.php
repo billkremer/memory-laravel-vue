@@ -14,12 +14,11 @@ use App\Http\Controllers\HomeController;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
-});
-// Route::post('/save-scores', function () {
-
+// Route::get('/', function () {
+//     return view('home');
 // });
+
+Route::get('/',[HomeController::class, 'index']);
 Route::get('/get-scores',[HomeController::class, 'show']);
 Route::post('/save-scores',[HomeController::class, 'store']);
 

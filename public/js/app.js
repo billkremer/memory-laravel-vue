@@ -1938,20 +1938,21 @@ __webpack_require__.r(__webpack_exports__);
       gameStarted: false,
       gameFinished: false,
       newGameStartedFlag: false,
+      // scoresObject: {},
       // Configuration Array for game grids / difficulty
       difficultyConfig: [['easy', [3, 4]], ['medium', [4, 5]], ['hard', [5, 6]] // ['Really hard', [5, 8]],
-      ]
+      ],
+      topScores: [// 'difficulty', number: clicks, number: seconds to complete, date
+      ['easy', 999, 999, '1 Jan 2021'], ['medium', 999, 999, '1 Jan 2021'], ['hard', 999, 999, '1 Jan 2021']]
     };
   },
   mounted: function mounted() {
     this.logWelcome();
   },
   watch: {
-    gameDifficulty: function gameDifficulty(newDifficulty, oldDifficulty) {
-      console.log(newDifficulty, oldDifficulty);
+    gameDifficulty: function gameDifficulty(newDifficulty, oldDifficulty) {// console.log(newDifficulty, oldDifficulty);
     },
-    newGameStartedFlag: function newGameStartedFlag(n, o) {
-      console.log(n, o, 'flag');
+    newGameStartedFlag: function newGameStartedFlag(n, o) {// console.log(n,o,'flag');
     }
   },
   computed: {
@@ -1968,9 +1969,38 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    eventChangeDifficulty: function eventChangeDifficulty(changeDifficulty) {
-      console.log('herefinally', this.gameDifficulty, changeDifficulty);
+    updateTopScores: function updateTopScores(score) {
+      // score = ['difficulty', number: clicks, number: seconds to complete, date string]
+      if (score.length !== 4) {
+        return false;
+      } // TODO which three scores to keep
+      // let flag = false;
 
+
+      for (var i = 0; i < this.topScores.length; i++) {
+        if (this.topScores[i][0] === score[0]) {
+          // same difficulty
+          if (this.topScores[i][1] < score[1]) {
+            // fewer clicks
+            this.topScores[i] = score;
+          } else if (this.topScores[i][1] === score[1]) {
+            // same clicks
+            if (this.topScores[i][2] < score[2]) {
+              // better time
+              this.topScores[i] = score;
+            }
+          } // this.topScores[i] = score;
+          // flag = true;
+
+        } // if (flag == false) {
+        //     this.topScores.push(score)
+        // }
+
+      }
+
+      return true;
+    },
+    eventChangeDifficulty: function eventChangeDifficulty(changeDifficulty) {
       if (this.gameDifficulty === changeDifficulty) {} else {
         this.gameDifficulty = changeDifficulty;
       }
@@ -1987,7 +2017,12 @@ __webpack_require__.r(__webpack_exports__);
       this.difficultyDisabled = false;
       this.gameStarted = false;
       this.gameFinished = true;
-      console.log(gameFinished, 'gamefinished event'); // console.log(gameFinished.target.value);
+      console.log(gameFinished, 'gamefinished event'); // get name and send result to backend
+
+      this.saveScore();
+      this.$nextTick(function () {
+        this.getScore();
+      }); // console.log(gameFinished.target.value);
       // this.gameFinished = gameFinished.target.value;
       // this.difficultyDisabled = false; // create a restart button?
       // this.boardDisabled = true // un-disable with a restart button
@@ -2001,6 +2036,27 @@ __webpack_require__.r(__webpack_exports__);
     },
     eventAnotherGuess: function eventAnotherGuess(guesses) {
       console.log(guesses, 'guesses');
+    },
+    getScore: function getScore() {
+      console.log('getting score'); // this.topScores
+
+      axios.get('get-scores').then(function (response) {
+        console.log(response.data, 'scoredata');
+      })["catch"](function (error) {
+        console.log(error);
+      });
+      ; // console.log(data);
+    },
+    saveScore: function saveScore() {
+      console.log('saving score'); // this.scoresObject = {'a': ['name', '10 clicks', 'easy']}; // not using
+
+      axios.post('save-scores', {
+        data: this.topScores
+      }).then(function (response) {
+        console.log(response);
+      })["catch"](function (error) {
+        console.log(error);
+      });
     },
     doit: function doit() {// TODO remove this later
       // console.log(this.gameDifficulty);
@@ -2070,8 +2126,6 @@ __webpack_require__.r(__webpack_exports__);
   computed: {},
   watch: {
     newGameStartedFlag: function newGameStartedFlag(newGS, oldGS) {
-      console.log(newGS, oldGS);
-
       if (newGS == true) {
         this.resetGame();
         this.$nextTick(function () {
@@ -2233,6 +2287,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "GameCard",
   data: function data() {
@@ -2313,8 +2376,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   watch: {
     disabled: function disabled(newDis, oldDis) {
-      console.log(newDis, oldDis, 'diffiulcty disable change in gamedifficulty');
-
       if (newDis == false && oldDis == true) {
         this.createDifficultyArray();
       }
@@ -2325,7 +2386,6 @@ __webpack_require__.r(__webpack_exports__);
       this.$emit('event_change_difficulty', this.pickedDifficulty);
     },
     createDifficultyArray: function createDifficultyArray() {
-      console.log('redoing difficulty array');
       this.difficultyConfig.sort(function (a, b) {
         return a[1][0] * a[1][1] - b[1][0] * b[1][1];
       });
@@ -38490,11 +38550,15 @@ var render = function() {
     "div",
     {
       staticClass: "card-back",
-      style: { width: _vm.card.size + "px", height: _vm.card.size + "px" },
+      style: {
+        position: "relative",
+        width: _vm.card.size + "px",
+        height: _vm.card.size + "px"
+      },
       on: { click: _vm.clicked }
     },
     [
-      _c("transition", { attrs: { name: "gamecard", mode: "out-in" } }, [
+      _c("transition-group", { attrs: { name: "gamecard", mode: "out-in" } }, [
         _c("img", {
           directives: [
             {
@@ -38505,11 +38569,22 @@ var render = function() {
             }
           ],
           key: "b",
+          staticStyle: { position: "absolute", "z-index": "10" },
           attrs: {
             src: _vm.card.url,
             alt: "robot number " + _vm.card.pairValue
           }
-        })
+        }),
+        _vm._v(" "),
+        _vm.card.cardFaceShown
+          ? _c("p", { key: "c", staticClass: "cardImageFallback" }, [
+              _vm._v(
+                "\n            " +
+                  _vm._s("#" + _vm.card.pairValue) +
+                  "\n        "
+              )
+            ])
+          : _vm._e()
       ])
     ],
     1
