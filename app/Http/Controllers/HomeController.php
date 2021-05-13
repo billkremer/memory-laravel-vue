@@ -18,7 +18,7 @@ class HomeController extends Controller
 
         $x = $this->getCookie($request, 'score');
 
-        $y = getUserIP();
+        $y = $this->getUserIP();
 
 
 

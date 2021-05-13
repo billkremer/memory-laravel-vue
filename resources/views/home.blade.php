@@ -33,7 +33,7 @@
 
 // print_r($ipaddress);
 
-//  print_r(getenv()); ?>
+ print_r(getenv()); ?>
 @endsection
 
 
