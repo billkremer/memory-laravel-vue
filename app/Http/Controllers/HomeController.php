@@ -19,7 +19,9 @@ class HomeController extends Controller
         $scores = $this->getCookie($request, 'score');
 
         $visitor = new Visitor();
-        $visitor->ipaddress = $this->getUserIP();
+        $ip = $this->getUserIP();
+        $visitor->ipfrom = $ip['ipfrom'];
+        $visitor->ipaddress = $ip['ipaddress'];
         $visitor->save();
         
 
@@ -93,9 +95,7 @@ class HomeController extends Controller
         //
     }
 
-
-
-        /**
+    /**
      * set the cookie.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -106,8 +106,10 @@ class HomeController extends Controller
 
         // $minutes = 60 * 24 * 365; // 1 year
         cookie()->queue($cookieName, $value, $minutes);
+
+
         // $value = json_encode($request->input('data'));
-       // $response = new Response('set my cookie');
+        // $response = new Response('set my cookie');
         // $response->withCookie(cookie($cookieName, $value, $minutes ));
 
         // cookie($cookieName, $value, $minutes );
@@ -125,10 +127,7 @@ class HomeController extends Controller
 
     private function getCookie(Request $request, $cookieName) {
 
-// $cookieName = 'XSRF-TOKEN';
-        // return json_decode($request->cookie($cookieName));
         return $request->cookie($cookieName);
-        // return $value;
 
     }
 
@@ -140,24 +139,24 @@ class HomeController extends Controller
 
     private function getUserIP() {
 
-        $ipaddress = '';
+        $ipinfo = '';
         if (!empty(getenv('HTTP_CLIENT_IP')))
-            $ipaddress = 'HTTP_CLIENT_IP '.getenv('HTTP_CLIENT_IP');
+            $ipinfo = ['ipfrom' => 'HTTP_CLIENT_IP ', 'ipaddress' => getenv('HTTP_CLIENT_IP')];
         else if(!empty(getenv('HTTP_X_FORWARDED_FOR')))
-            $ipaddress = 'HTTP_X_FORWARDED_FOR '.getenv('HTTP_X_FORWARDED_FOR');
+            $ipinfo = ['ipfrom' => 'HTTP_X_FORWARDED_FOR ', 'ipaddress' => getenv('HTTP_X_FORWARDED_FOR')];
         else if(!empty(getenv('HTTP_X_FORWARDED')))
-            $ipaddress = 'HTTP_X_FORWARDED '.getenv('HTTP_X_FORWARDED');
+            $ipinfo = ['ipfrom' => 'HTTP_X_FORWARDED ', 'ipaddress' => getenv('HTTP_X_FORWARDED')];
         else if(!empty(getenv('HTTP_X_CLUSTER_CLIENT_IP')))
-            $ipaddress = 'HTTP_X_CLUSTER_CLIENT_IP '.getenv('HTTP_X_CLUSTER_CLIENT_IP');
+            $ipinfo = ['ipfrom' => 'HTTP_X_CLUSTER_CLIENT_IP ', 'ipaddress' => getenv('HTTP_X_CLUSTER_CLIENT_IP')];
         else if(!empty(getenv('HTTP_FORWARDED_FOR')))
-            $ipaddress = 'HTTP_FORWARDED_FOR '.getenv('HTTP_FORWARDED_FOR');
+            $ipinfo = ['ipfrom' => 'HTTP_FORWARDED_FOR ', 'ipaddress' => getenv('HTTP_FORWARDED_FOR')];
         else if(!empty(getenv('HTTP_FORWARDED')))
-            $ipaddress = 'HTTP_FORWARDED '.getenv('HTTP_FORWARDED');
+            $ipinfo = ['ipfrom' => 'HTTP_FORWARDED ', 'ipaddress' => getenv('HTTP_FORWARDED')];
         else if(!empty(getenv('REMOTE_ADDR')))
-            $ipaddress = 'REMOTE_ADDR '.getenv('REMOTE_ADDR');
+            $ipinfo = ['ipfrom' => 'REMOTE_ADDR ', 'ipaddress' => getenv('REMOTE_ADDR')];
         else
-            $ipaddress = 'UNKNOWN';
-        return $ipaddress;
+            $ipinfo = ['ipfrom' => 'UNKNOWN', 'ipaddress' => 'UNKNOWN'];
+        return $ipinfo;
 
 
     }
