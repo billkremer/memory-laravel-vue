@@ -19,6 +19,7 @@ use App\Http\Controllers\HomeController;
 // });
 
 Route::get('/',[HomeController::class, 'index']);
+Route::get('/a',[HomeController::class, 'indexMe']);
 Route::get('/get-scores',[HomeController::class, 'show']);
 Route::post('/save-scores',[HomeController::class, 'store']);
 

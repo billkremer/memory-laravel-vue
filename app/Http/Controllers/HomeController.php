@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Score;
+use App\Models\Visitor;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -15,16 +16,27 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
+        $scores = $this->getCookie($request, 'score');
 
-        $x = $this->getCookie($request, 'score');
-
-        $y = $this->getUserIP();
-
-
-
+        $visitor = new Visitor();
+        $visitor->ipaddress = $this->getUserIP();
+        $visitor->save();
         
 
-        return view('home', ['score' => $x, 'visitor' => $y]);
+        return view('home', ['score' => $scores, ]);
+
+    }
+
+    /**
+     * Display a listing of the resource without logging.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexMe(Request $request)
+    {
+        $scores = $this->getCookie($request, 'score');
+
+        return view('home', ['score' => $scores, ]);
 
     }
 
