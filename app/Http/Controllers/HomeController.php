@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use DateTime;
 use App\Models\Score;
 use App\Models\Visitor;
 use Illuminate\Http\Request;
@@ -18,26 +19,14 @@ class HomeController extends Controller
     {
         $scores = $this->getCookie($request, 'score');
 
+        $this->cleanup();
+
         $visitor = new Visitor();
         $ip = $this->getUserIP();
         $visitor->ipfrom = $ip['ipfrom'];
         $visitor->ipaddress = $ip['ipaddress'];
         $visitor->save();
         
-
-        return view('home', ['score' => $scores, ]);
-
-    }
-
-    /**
-     * Display a listing of the resource without logging.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function indexMe(Request $request)
-    {
-        $scores = $this->getCookie($request, 'score');
-
         return view('home', ['score' => $scores, ]);
 
     }
@@ -83,6 +72,21 @@ class HomeController extends Controller
     {
         //
     }
+
+
+    /**
+     * Cleanup old records.
+     *
+     */
+    private function cleanup()
+    {
+        $date = new DateTime('@'.strtotime('-1 year'));
+        $formattedDate = $date->format('Y-m-d H:i:s');
+
+        $deleted = Visitor::where('created_at','<',$formattedDate)->delete();
+
+    }
+
 
     /**
      * Remove the specified resource from storage.

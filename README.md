@@ -6,6 +6,7 @@ play here: [memory-laravel-vue.herokuapp.com/](http://memory-laravel-vue.herokua
 
 
 ## Log
+
 * 16-April-2021 creation of app scaffolding
 * 17-April-2021 added basic styling and started work on components
 * 18-April-2021 game difficulty component working, gameboard component started
@@ -14,11 +15,11 @@ play here: [memory-laravel-vue.herokuapp.com/](http://memory-laravel-vue.herokua
 * 23-April-2021 can play one time through
 * 23-April-2021 fixed transition / card show issue, reconfigured difficulty
 * 23-April-2021 deployed current version to Heroku
-* 16-April-2021 creation of app scaffolding
-* 25-April-2019 getting synonyms for long words.  Click on title and observe in console.
-* 25-March-2021 getting back to significant work. Fixed asynchronous problems. 
-* 29-March-2021 jQuery dropdowns working and collecting data.
-
+* 25-April-2021 reworked gameplay to reset game
+* 26-April-2021 saving scores in a cookie
+* 12-May-2021 working out Heroku bugs
+* 13-May-2021 added visitor info
+* 21-May-2021 cleanup of code, fix some formatting
 ## How To Run Locally
 
 1. git clone this repo to your computer
@@ -48,7 +49,8 @@ play a simple Memory card game, on game finish, save high score if a high score.
 
 Robots lovingly delivered by [Robohash.org](https://robohash.org/)
 https://favicon.io/favicon-generator/
-
+https://fonts.google.com/specimen/Audiowide
+https://fonts.google.com/specimen/Josefin+Slab
 
 https://codepen.io/gabrieleromanato/pen/XRRpOO
 https://jsfiddle.net/SteveSchrab/Th8Cs/

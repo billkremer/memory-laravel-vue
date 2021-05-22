@@ -1,10 +1,9 @@
 @extends('layout')
 
 @section('content')
-    <div class="container">
-        <?php print_r($score) ?>
-        <game-game></game-game>
-    </div>
+    <game-game
+        saved-score="{{$score}}"
+    ></game-game>
 @endsection
 
 

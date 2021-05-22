@@ -3,10 +3,21 @@ body {
 
     background: $background-light-blue;  /* fallback for old browsers */
     background: linear-gradient(to right, $background-dark-blue, $background-light-blue); 
+  color: $yellow;
 
 }
 
-label.btn {
+@media (max-width: 768px) {
+  body {
+    margin: 5px;
+  }
+}
+
+
+
+label.btn,
+.score-text > span
+{
   text-transform: capitalize;
 }
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="container" id="gameDifficulty">
+    <div class="container-md" id="gameDifficulty">
 
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
 
@@ -51,12 +51,15 @@
             disabled: function (newDis, oldDis) {
                 if (newDis == false && oldDis == true) {
                     this.createDifficultyArray();
+                    this.$emit('event_change_difficulty', this.pickedDifficulty)
                 }
             },
         },
         methods: {
             emitChangeDifficulty: function() {
-                this.$emit('event_change_difficulty', this.pickedDifficulty)
+                if (!this.disabled) {
+                    this.$emit('event_change_difficulty', this.pickedDifficulty)
+                }
             },
             createDifficultyArray: function () {
                 this.difficultyConfig.sort(function(a,b) {

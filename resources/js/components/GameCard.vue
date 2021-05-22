@@ -6,20 +6,17 @@
                          width: card.size + 'px', 
                          height: card.size + 'px'}"
     >
-        <transition-group name="gamecard"  mode="out-in">
-
-            <img 
-                style="position: absolute; z-index:10"
-                v-show="card.cardFaceShown"
-                v-bind:src="card.url"
-                key="b"
-                :alt="'robot number ' + card.pairValue"
+        <transition-group name="gamecard" mode="out-in">
+            <img style="position: absolute; z-index:10"
+                 v-show="card.cardFaceShown"
+                 v-bind:src="card.url"
+                 key="b"
+                 :alt="'robot number ' + card.pairValue"
             >
-            <p
-                class="cardImageFallback"
+            <p  class="cardImageFallback"
                 key="c" 
                 v-if="card.cardFaceShown"
-                >
+            >
                 {{'#' + card.pairValue}}
             </p>
         </transition-group>
@@ -51,6 +48,5 @@
                 }
             },
         },
-        
     }
 </script>

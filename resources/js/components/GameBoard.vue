@@ -1,7 +1,5 @@
 <template>
-    <div class="row container" ref="gameboard" id="gameboard">
-
-
+    <div class="row container-lg mx-auto" ref="gameboard" id="gameboard">
         <game-card
             v-for="card in cardArray"
             v-bind:card="card"
@@ -9,9 +7,6 @@
             v-bind:ref="card.cardId"
             v-on:event_card_clicked="eventCardClicked(card)"
         ></game-card>
-
-        <!-- <br><button @click="doit1()">click</button> -->
-
     </div>
 </template>
 
@@ -26,7 +21,8 @@
                 numberOfGuesses: 0,
                 numberOfMatches: 0,
                 gameStarted: false,
-                // gameFinished: false,
+                timeGameStarted: 0,
+                timeGameFinished: 0,
 
 
             }
@@ -60,7 +56,6 @@
                 this.resetGame();
             },
             cardsClicked: function (newCards, oldCards) {
-
                 if (this.cardsClicked.length >= 2) {
 
                     if (this.cardsClicked[0].pairValue === this.cardsClicked[1].pairValue
@@ -113,7 +108,7 @@
 
                 // https://robohash.org/a?bgset=any&size=300x300&set=set4
                 let baseurl = 'https://robohash.org/';
-                let randSeed = String(Date.now()).slice(-6);
+                let randSeed = String((new Date(Date.now())).getHours()); // gets new images every hour
 
                 let bgParam = '?bgset=any';
                 let setParam = '&set=set' + Math.floor((Math.random() * 5) + 1);
@@ -125,22 +120,20 @@
                 if ( width > height ) { robotSize = Math.floor(height); }
                 let sizeParam = '&size=' + robotSize + 'x' + robotSize;
 
-
                 for (let i = 0; i < numberOfCards; i += 2) {
-                    cards[i] = {url: (baseurl + i + randSeed + bgParam + setParam + sizeParam),
-                                pairValue: i, 
-                                cardId: i, 
-                                size: robotSize,
-                                cardFaceShown: false,
-                                canClick: true, }
-                    cards[i+1] = {url: (baseurl + i + randSeed + bgParam + setParam + sizeParam),
-                                pairValue: i,
-                                cardId: (i + 1),
-                                size: robotSize,
-                                cardFaceShown: false, 
-                                canClick: true, }
+                    cards[i] = { url: (baseurl + i + randSeed + bgParam + setParam + sizeParam),
+                                 pairValue: i, 
+                                 cardId: i, 
+                                 size: robotSize,
+                                 cardFaceShown: false,
+                                 canClick: true, }
+                  cards[i+1] = { url: (baseurl + i + randSeed + bgParam + setParam + sizeParam),
+                                 pairValue: i,
+                                 cardId: (i + 1),
+                                 size: robotSize,
+                                 cardFaceShown: false, 
+                                 canClick: true, }
                 }
-
 
                 this.cardArray = this.shuffleArray(cards);
             },
@@ -160,30 +153,26 @@
                     this.emitGameStarted();
                 } // currently this just deactivates the difficulty select
 
-                // console.log('gameboard card clicked', this.cardsClicked, card);
-
                 if (this.cardsClicked.length > 0 
                     && this.cardsClicked[0].cardId !== card.cardId) {
                     this.cardsClicked.push(card);
                     this.numberOfGuesses++;
                 } else if (this.cardsClicked.length == 0 ) {
                     this.cardsClicked.push(card);
-                    // console.log('here', card);
-                    // card.canClick = false;
-                    // this.$refs[this.cardsClicked[0].cardId][0].card.canClick = false;
-                                        // console.log('here2', card);
-
                     this.numberOfGuesses++;
                 }
 
                 this.$emit('event_another_guess', this.numberOfGuesses);
-
             },
             emitGameStarted: function () {
+                this.timeGameStarted = Date.now();
                 this.$emit('event_game_started', 'started');
             },
             emitGameFinished: function () {
-                this.$emit('event_game_finished', this.numberOfGuesses);
+                this.timeGameFinished = Date.now();
+                let gameTime = Math.floor((this.timeGameFinished - this.timeGameStarted) / 1000);
+
+                this.$emit('event_game_finished', [this.numberOfGuesses, gameTime]);
             },
 
         }
