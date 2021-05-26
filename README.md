@@ -20,6 +20,7 @@ play here: [memory-laravel-vue.herokuapp.com/](http://memory-laravel-vue.herokua
 * 12-May-2021 working out Heroku bugs
 * 13-May-2021 added visitor info
 * 21-May-2021 cleanup of code, fix some formatting
+* 24-May-2021 added a timer
 ## How To Run Locally
 
 1. git clone this repo to your computer
