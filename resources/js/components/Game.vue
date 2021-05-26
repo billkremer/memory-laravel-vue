@@ -1,49 +1,53 @@
 <template>
     <div class="" id="gamegame" ref="gamegame">
         <div class="container-lg">
-            <div class="row">
-            <!-- {{-- left --}} -->
-                <game-difficulty
-                    class="col-md"
-                    :difficultyConfig="this.difficultyConfig"
-                    :disabled="this.difficultyDisabled"
-                    v-on:event_change_difficulty="eventChangeDifficulty($event)"
-                ></game-difficulty>
+            <div class="row align-items-center">
+                <div class="col-sm-12 col-md-6 row">
+                                            <!-- class="col-sm-6" -->
+
+                    <game-difficulty
+                        class="col-auto mr-auto"
+                        :difficultyConfig="this.difficultyConfig"
+                        :disabled="this.difficultyDisabled"
+                        v-on:event_change_difficulty="eventChangeDifficulty($event)"
+                    ></game-difficulty>
+                    <game-timer
+                        :timeGameStarted="this.gameStartedTime"
+                        :timeGameFinished="this.timeGameFinished"
+                        :gameTime="this.gameSeconds"
+                    ></game-timer>
+                </div>
+
+
+                        <!-- class="col-sm-12 col-md-6 pl-4" -->
+
                 <top-scores
-                    id='test'
-                    class="col-md"
+                    class="col-sm-12 col-md-6 px-2"
                     :topScores="this.topScores"
                 ></top-scores>
-            <!-- {{-- right --}} -->
-            <!-- <div> -->
-                <!-- {{-- top score  or reset --}} -->
-            <!-- </div> -->
-
             </div>
 
+            <game-board
+                :disabled="this.boardDisabled"
+                :gameGrid="this.gameGrid"
+                :newGameStartedFlag="this.newGameStartedFlag"
+                v-on:event_game_started="eventGameStarted($event)"
+                v-on:event_game_finished="eventGameFinished($event)"
+                v-on:event_another_guess="eventAnotherGuess($event)"
+                v-on:event_game_reset="eventGameReset($event)"
 
-        <game-board
-            :disabled="this.boardDisabled"
-            :gameGrid="this.gameGrid"
-            :newGameStartedFlag="this.newGameStartedFlag"
-            v-on:event_game_started="eventGameStarted($event)"
-            v-on:event_game_finished="eventGameFinished($event)"
-            v-on:event_another_guess="eventAnotherGuess($event)"
-            v-on:event_game_reset="eventGameReset($event)"
-
-        ></game-board>
-
-        <!-- <button @click="doit()">click</button> -->
-
+            ></game-board>
 
         </div>
     </div>
 </template>
 
 <script>
+import GameBoard from './GameBoard.vue';
+import GameTimer from './GameTimer.vue';
 import GameTopScores from './GameTopScores.vue';
     export default {
-  components: { GameTopScores },
+        components: { GameBoard, GameTopScores, GameTimer },
         name: "Game",
         data: function () {
             return {
@@ -51,7 +55,10 @@ import GameTopScores from './GameTopScores.vue';
                 difficultyDisabled: false,
                 boardDisabled: false,
                 gameStarted: false,
+                gameStartedTime: 0,
                 gameFinished: false,
+                timeGameFinished: 0,
+                gameSeconds: 0,
                 newGameStartedFlag: false,
                 // scoresObject: {},
 
@@ -129,15 +136,16 @@ import GameTopScores from './GameTopScores.vue';
                 this.newGameStartedFlag = true;
 
             },
-            eventGameStarted: function(gameStarted) {
+            eventGameStarted: function(gameStartedTime) {
                 this.difficultyDisabled = true;
                 this.gameStarted = true;
                 this.gameFinished = false;
-
+                this.gameStartedTime = gameStartedTime;
             },
             eventGameFinished: async function(gameFinished) {
-                let clicks = gameFinished[0];
-                let seconds = gameFinished[1];
+                this.timeGameFinished = gameFinished[0];
+                let clicks = gameFinished[1];
+                this.gameSeconds = gameFinished[2];
 
                 this.difficultyDisabled = false;
                 this.gameStarted = false;
@@ -147,11 +155,10 @@ import GameTopScores from './GameTopScores.vue';
                 let currentBestClicks = this.topScores[topScoresIndex].clicks;
                 let currentBestSeconds = this.topScores[topScoresIndex].seconds;
 
-                if (clicks < currentBestClicks || (clicks == currentBestClicks && seconds < currentBestSeconds)) {
+                if (clicks < currentBestClicks || (clicks == currentBestClicks && this.gameSeconds < currentBestSeconds)) {
                     this.topScores[topScoresIndex].clicks = clicks;
-                    this.topScores[topScoresIndex].seconds = seconds;
+                    this.topScores[topScoresIndex].seconds = this.gameSeconds;
                     this.topScores[topScoresIndex].date = (new Date(Date.now()).toDateString()).substr(-11);
-
                 } 
 
                 let saveresponse = await this.saveScore(this.topScores);

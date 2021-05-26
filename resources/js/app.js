@@ -19,11 +19,11 @@ window.Vue = require('vue').default;
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('game-game', require('./components/Game.vue').default);
 Vue.component('game-board', require('./components/GameBoard.vue').default);
-Vue.component('game-difficulty', require('./components/GameDifficulty.vue').default);
 Vue.component('game-card', require('./components/GameCard.vue').default);
+Vue.component('game-difficulty', require('./components/GameDifficulty.vue').default);
+Vue.component('game-timer', require('./components/GameTimer.vue').default);
 Vue.component('top-scores', require('./components/GameTopScores.vue').default);
 
 /**

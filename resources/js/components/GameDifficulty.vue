@@ -1,8 +1,6 @@
 <template>
-    <div class="container-md" id="gameDifficulty">
-
+    <div class="" id="gameDifficulty">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
-
             <label 
                 v-for="(difficulty, index) in difficultyConfig"
                 v-bind:key="index"
@@ -14,7 +12,6 @@
                     'btn-outline-info': pickedDifficulty !== difficulty[0] && disabled,
                 }"
             >
-
                 <input type="radio" name="difficulty" 
                     :id="'difficulty' + index" 
                     :value="difficulty[0]"
@@ -24,9 +21,7 @@
                     :checked="pickedDifficulty == difficulty[0] ? 'checked' : ''"
                 > {{difficulty[0]}}
             </label>
-
         </div>
-
     </div>
 </template>
 

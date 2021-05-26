@@ -4,15 +4,9 @@ body {
     background: $background-light-blue;  /* fallback for old browsers */
     background: linear-gradient(to right, $background-dark-blue, $background-light-blue); 
   color: $yellow;
+    font-size: 16px;
 
 }
-
-@media (max-width: 768px) {
-  body {
-    margin: 5px;
-  }
-}
-
 
 
 label.btn,
@@ -23,12 +17,15 @@ label.btn,
 
 
 h1 {
-	font: 72px 'Audiowide', cursive;
+	font: 4.5rem 'Audiowide', cursive;
   color: $yellow;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin: 0 0 0 0;
 }
 
 h2 {
-	font: 24px 'Josefin Slab', serif;
+	font: 1.5rem 'Josefin Slab', serif;
   color: $yellow;
 }
 
@@ -50,7 +47,7 @@ div.card-back {
   padding: auto auto auto auto;
 }
 div.card-cover {
-    background-color: $green;
+  background-color: $green;
 
 }
 
@@ -77,3 +74,10 @@ p.cardImageFallback {
     margin: auto auto auto auto;
 }
 
+#gametimer  {
+  top: -5px;
+  & > h1 {
+    line-height: 1.1;
+
+  }
+}

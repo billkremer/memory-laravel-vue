@@ -7,7 +7,11 @@
                          height: card.size + 'px'}"
     >
         <transition-group name="gamecard" mode="out-in">
-            <img style="position: absolute; z-index:10"
+            <img :style="{ position: 'absolute',
+                           'z-index': 10,
+                           width: card.size + 'px', 
+                           height: card.size + 'px' }"
+                         
                  v-show="card.cardFaceShown"
                  v-bind:src="card.url"
                  key="b"

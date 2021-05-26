@@ -1,5 +1,5 @@
 <template>
-    <div class="row container-lg mx-auto" ref="gameboard" id="gameboard">
+    <div class="row justify-content-center" ref="gameboard" id="gameboard">
         <game-card
             v-for="card in cardArray"
             v-bind:card="card"
@@ -11,8 +11,10 @@
 </template>
 
 <script>
+import GameCard from './GameCard.vue';
     export default {
         name: "GameBoard",
+        components: { GameCard },
         data: function () {
             return {
                 availableWidth: 0,
@@ -23,8 +25,6 @@
                 gameStarted: false,
                 timeGameStarted: 0,
                 timeGameFinished: 0,
-
-
             }
         },
         props: [
@@ -37,10 +37,8 @@
                 this.resetGame();
                 window.addEventListener("resize", this.checkWidth);
             });
-
         },
         computed: {
-
 
         },
         watch: {
@@ -106,7 +104,7 @@
                 let cards = [];
                 let numberOfCards = this.gameGrid[0] * this.gameGrid[1];
 
-                // https://robohash.org/a?bgset=any&size=300x300&set=set4
+                // https://robohash.org/a?bgset=any&size=250x250&set=set4
                 let baseurl = 'https://robohash.org/';
                 let randSeed = String((new Date(Date.now())).getHours()); // gets new images every hour
 
@@ -118,7 +116,7 @@
                 let robotSize = Math.floor(width);
 
                 if ( width > height ) { robotSize = Math.floor(height); }
-                let sizeParam = '&size=' + robotSize + 'x' + robotSize;
+                let sizeParam = '&size=250x250'; // prevents reloading of images
 
                 for (let i = 0; i < numberOfCards; i += 2) {
                     cards[i] = { url: (baseurl + i + randSeed + bgParam + setParam + sizeParam),
@@ -137,7 +135,6 @@
 
                 this.cardArray = this.shuffleArray(cards);
             },
-
             shuffleArray: function (array) {
                 // https://javascript.info/array-methods#shuffle-an-array
                 for (let i = array.length - 1; i > 0; i--) {
@@ -146,7 +143,6 @@
                 }
                 return array;
             },
-
             eventCardClicked: function(card) {
                 if(this.gameStarted == false) {
                     this.gameStarted = true;
@@ -166,17 +162,14 @@
             },
             emitGameStarted: function () {
                 this.timeGameStarted = Date.now();
-                this.$emit('event_game_started', 'started');
+                this.$emit('event_game_started', this.timeGameStarted);
             },
             emitGameFinished: function () {
                 this.timeGameFinished = Date.now();
                 let gameTime = Math.floor((this.timeGameFinished - this.timeGameStarted) / 1000);
 
-                this.$emit('event_game_finished', [this.numberOfGuesses, gameTime]);
+                this.$emit('event_game_finished', [this.timeGameFinished, this.numberOfGuesses, gameTime]);
             },
-
         }
-
-
     }
 </script>
