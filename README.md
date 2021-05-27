@@ -21,6 +21,7 @@ play here: [memory-laravel-vue.herokuapp.com/](http://memory-laravel-vue.herokua
 * 13-May-2021 added visitor info
 * 21-May-2021 cleanup of code, fix some formatting
 * 24-May-2021 added a timer
+* 26-May-2021 fixed next game flashing bug
 ## How To Run Locally
 
 1. git clone this repo to your computer
