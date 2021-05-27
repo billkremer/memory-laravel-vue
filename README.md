@@ -36,7 +36,6 @@ play here: [memory-laravel-vue.herokuapp.com/](http://memory-laravel-vue.herokua
 
 6. Create and Populate the Database 
     * ```$ php artisan migrate:fresh```
-    * ```$ php artisan db:seed```
 
 7. Run local server
     * ```$ php artisan serve```
