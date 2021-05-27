@@ -11,13 +11,14 @@
                            'z-index': 10,
                            width: card.size + 'px', 
                            height: card.size + 'px' }"
-                         
+                 :class="{'stoptransitions': stoptransitions}"
                  v-show="card.cardFaceShown"
                  v-bind:src="card.url"
                  key="b"
                  :alt="'robot number ' + card.pairValue"
             >
             <p  class="cardImageFallback"
+                :class="{'stoptransitions': stoptransitions}"
                 key="c" 
                 v-if="card.cardFaceShown"
             >
@@ -37,11 +38,19 @@
         },
         props: [
             'card',
+            'stoptransitions',
         ],
         mounted() {
             this.$nextTick(function () {
 
             })
+        },
+        watch: {
+            card: function (n, o) {
+                if (n != o) {
+                    this.card.cardFaceShown = false;
+                }
+            },
         },
         methods: {
             clicked: function($event) {

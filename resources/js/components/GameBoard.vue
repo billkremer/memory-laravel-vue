@@ -5,6 +5,7 @@
             v-bind:card="card"
             v-bind:key="card.cardId"
             v-bind:ref="card.cardId"
+            v-bind:stoptransitions="stoptransitions"
             v-on:event_card_clicked="eventCardClicked(card)"
         ></game-card>
     </div>
@@ -25,6 +26,7 @@ import GameCard from './GameCard.vue';
                 gameStarted: false,
                 timeGameStarted: 0,
                 timeGameFinished: 0,
+                stoptransitions: false,
             }
         },
         props: [
@@ -81,6 +83,7 @@ import GameCard from './GameCard.vue';
             },
             numberOfMatches: function (n,o) {
                 if (this.numberOfMatches == this.cardArray.length / 2 ) {
+                    this.stoptransitions = true;
                     this.emitGameFinished();
                 }
             },
@@ -93,6 +96,7 @@ import GameCard from './GameCard.vue';
                 this.numberOfGuesses = 0;
                 this.numberOfMatches = 0;
                 this.gameStarted = false; 
+
                 this.checkWidth();
                 
             },
@@ -116,7 +120,7 @@ import GameCard from './GameCard.vue';
                 let robotSize = Math.floor(width);
 
                 if ( width > height ) { robotSize = Math.floor(height); }
-                let sizeParam = '&size=250x250'; // prevents reloading of images
+                let sizeParam = '&size=250x250';
 
                 for (let i = 0; i < numberOfCards; i += 2) {
                     cards[i] = { url: (baseurl + i + randSeed + bgParam + setParam + sizeParam),
@@ -161,6 +165,8 @@ import GameCard from './GameCard.vue';
                 this.$emit('event_another_guess', this.numberOfGuesses);
             },
             emitGameStarted: function () {
+                this.stoptransitions = false;
+
                 this.timeGameStarted = Date.now();
                 this.$emit('event_game_started', this.timeGameStarted);
             },

@@ -1,10 +1,8 @@
 <template>
     <div class="px-0 col-auto text-right" id="gametimer">
-        <h1
-            class="timer"
-        >
+        <span class="timer">
             {{ this.time }}
-        </h1>
+        </span>
 
     </div>
 </template>
@@ -40,7 +38,7 @@
                     this.running = false;
                     this.startStopTimer()
                 }
-            }
+            },
         },
         methods: {
             startStopTimer: function () {

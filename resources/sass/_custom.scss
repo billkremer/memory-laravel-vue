@@ -3,7 +3,7 @@ body {
 
     background: $background-light-blue;  /* fallback for old browsers */
     background: linear-gradient(to right, $background-dark-blue, $background-light-blue); 
-  color: $yellow;
+    color: $yellow;
     font-size: 16px;
 
 }
@@ -64,6 +64,10 @@ div.card-cover {
   transition: all 1s ease;
 }
 
+.stoptransitions {
+  transition: none !important;
+}
+
 small.robohash {
   color: $robohash;
 }
@@ -75,9 +79,11 @@ p.cardImageFallback {
 }
 
 #gametimer  {
-  top: -5px;
-  & > h1 {
+  font: 3rem 'Audiowide', cursive;
+  color: $yellow;
+  top: 2px;
+  & > span {
     line-height: 1.1;
-
+    padding-right: 1.5rem;
   }
 }

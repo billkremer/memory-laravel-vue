@@ -2,8 +2,7 @@
     <div class="" id="gamegame" ref="gamegame">
         <div class="container-lg">
             <div class="row align-items-center">
-                <div class="col-sm-12 col-md-6 row">
-                                            <!-- class="col-sm-6" -->
+                <div class="col-sm-12 col-md-6 row pr-0">
 
                     <game-difficulty
                         class="col-auto mr-auto"
@@ -16,10 +15,8 @@
                         :timeGameFinished="this.timeGameFinished"
                         :gameTime="this.gameSeconds"
                     ></game-timer>
+
                 </div>
-
-
-                        <!-- class="col-sm-12 col-md-6 pl-4" -->
 
                 <top-scores
                     class="col-sm-12 col-md-6 px-2"
@@ -35,7 +32,6 @@
                 v-on:event_game_finished="eventGameFinished($event)"
                 v-on:event_another_guess="eventAnotherGuess($event)"
                 v-on:event_game_reset="eventGameReset($event)"
-
             ></game-board>
 
         </div>
@@ -69,7 +65,7 @@ import GameTopScores from './GameTopScores.vue';
                     ['hard', [5,6]],
                     // ['Really hard', [5, 8]],
                 ],
-                difficultyConfig2: [
+                difficultyConfig2: [ // TODO reconfigure to use the object someday.
                     {   difficulty: 'easy',
                         grid: [3,4], },
                     {   difficulty: 'medium',
@@ -79,20 +75,7 @@ import GameTopScores from './GameTopScores.vue';
                     // {   difficulty: 'Really hard', 
                     //     grid: [5, 8] },
                 ],
-                topScores: [ // 'difficulty', number: clicks, number: seconds to complete, date
-                    { difficulty: 'easy', 
-                      clicks: 999, 
-                      seconds: 999,
-                      date: '1 Jan 2021' },
-                    { difficulty: 'medium', 
-                      clicks: 999, 
-                      seconds: 999,
-                      date: '1 Jan 2021' },
-                    { difficulty: 'hard', 
-                      clicks: 999, 
-                      seconds: 999,
-                      date: '1 Jan 2021' },
-                ],
+                topScores: [],
             }
         },
         props: [
@@ -103,6 +86,10 @@ import GameTopScores from './GameTopScores.vue';
 
             if (this.savedScore !== '') {
                 this.topScores = JSON.parse(this.savedScore);
+            } else {
+                this.topScores = (this.difficultyConfig.map(el => ({difficulty: el[0], clicks: 999, seconds: 999, date: '1 Jan 2021'})));
+                // this.topScores = (this.difficultyConfig2.map(el => ({difficulty: el.difficulty, clicks: 999, seconds: 999, date: '1 Jan 2021'})));
+
             }
 
         },
@@ -117,24 +104,26 @@ import GameTopScores from './GameTopScores.vue';
         computed: {
             gameGrid: function() {
                 let difficultyIndex = this.difficultyConfig.findIndex( (el) => el[0] === this.gameDifficulty )
+                // let difficultyIndex = this.difficultyConfig2.findIndex( (el) => el.difficulty === this.gameDifficulty )
                 if (difficultyIndex != -1 ) {
                     return this.difficultyConfig[difficultyIndex][1];
+                    return this.difficultyConfig2[difficultyIndex].grid;
+
                 } 
 
                 // fallback
                 let x = Math.ceil(this.difficultyConfig.length / 2 ) - 1;
                 return this.difficultyConfig[x][1];
+                // return this.difficultyConfig2[x].grid;
             },
         },
         methods: {
-
             eventChangeDifficulty: function(changeDifficulty) {
                 if (this.gameDifficulty !== changeDifficulty) {
                     this.gameDifficulty = changeDifficulty;
                 }
 
                 this.newGameStartedFlag = true;
-
             },
             eventGameStarted: function(gameStartedTime) {
                 this.difficultyDisabled = true;
@@ -164,15 +153,12 @@ import GameTopScores from './GameTopScores.vue';
                 let saveresponse = await this.saveScore(this.topScores);
                 let getresponse = await this.getScore();
             },
-
-
             eventGameReset: function (x) {
                 this.newGameStartedFlag = false;
             },
             eventAnotherGuess: function (guesses) {
                 // console.log(guesses, 'guesses');
             },
-
             getScore: function () {
                 return axios.get('get-scores');
             },
@@ -193,9 +179,7 @@ import GameTopScores from './GameTopScores.vue';
                 let mm4 = " by Bill Kremer "
                 console.log("Welcome to your\n" + '%c' + mm1 + '%c' + mm2 +'%c'+ mm3 + '%c' + mm4, mm1style, mm2style, mm3style, mm4style);
             },
-
         },
-
 
     }
 </script>
