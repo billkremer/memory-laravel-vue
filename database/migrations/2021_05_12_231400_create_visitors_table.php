@@ -17,6 +17,7 @@ class CreateVisitorsTable extends Migration
             $table->id();
             $table->string('ipfrom');
             $table->string('ipaddress');
+            $table->string('note');
             $table->timestamps();
         });
     }

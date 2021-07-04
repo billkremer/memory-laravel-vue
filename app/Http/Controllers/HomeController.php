@@ -25,6 +25,7 @@ class HomeController extends Controller
         $ip = $this->getUserIP();
         $visitor->ipfrom = $ip['ipfrom'];
         $visitor->ipaddress = $ip['ipaddress'];
+        $visitor->note = '';
         $visitor->save();
         
         return view('home', ['score' => $scores, ]);

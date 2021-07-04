@@ -172,12 +172,14 @@ import GameTopScores from './GameTopScores.vue';
                 let mm2style = 'background: #ffd166; color: black';
                 let mm3style = 'border-bottom-left-radius: 5px; background: #ffd166; color: black';
                 let mm4style = 'border-radius: 0 5px 5px 0; background: #2c3e50; color: #ffd166';
+                let mm5style = 'color: #ffd166';
 
                 let mm1 = " ┌┬┐┌─┐┌┬┐┌─┐┬─┐┬ ┬   \n";
                 let mm2 = " │││├┤ ││││ │├┬┘└┬┘   \n"
                 let mm3 = " ┴ ┴└─┘┴ ┴└─┘┴└─ ┴ 🐘";
-                let mm4 = " by Bill Kremer "
-                console.log("Welcome to your\n" + '%c' + mm1 + '%c' + mm2 +'%c'+ mm3 + '%c' + mm4, mm1style, mm2style, mm3style, mm4style);
+                let mm4 = " by Bill Kremer \n"
+                let mm5 = "https://github.com/billkremer/memory-laravel-vue"
+                console.log("Welcome to your\n%c" + mm1 + '%c' + mm2 +'%c'+ mm3 + '%c' + mm4 + '%c' + mm5, mm1style, mm2style, mm3style, mm4style, mm5style);
             },
         },
 

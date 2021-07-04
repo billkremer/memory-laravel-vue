@@ -25,6 +25,7 @@ class Visitor extends Model
     protected $fillable = [
         'ipfrom',
         'ipaddress',
+        'note',
     ];
 
     /**
